@@ -22,8 +22,12 @@ class Home extends Component {
 		router: () => null,
 	};
 
+	
+
 	async componentDidMount() {
 		const { user } = this.props;
+		
+
 
 		//if currentLocation doesnt exists in localstorage then redirect the user to firstscreen
 		//else make API calls
@@ -94,11 +98,7 @@ class Home extends Component {
 	}
 
 	render() {
-
-		console.log(Response)
-		if (window.innerWidth > 768) {
-			return <Redirect to="/" />;
-		}
+		
 
 		if (localStorage.getItem("userSetAddress") === null) {
 			// this.context.router.history.push("/search-location");
@@ -116,6 +116,9 @@ class Home extends Component {
 		// console.log(promo_slides.mainSlides.length);
 
 		return (
+			 
+
+
 			<React.Fragment>
 				<Meta
 					seotitle={localStorage.getItem("seoMetaTitle")}
@@ -127,7 +130,9 @@ class Home extends Component {
 					twittertitle={localStorage.getItem("seoTwitterTitle")}
 					twitterdescription={localStorage.getItem("seoTwitterDescription")}
 				/>
-				<div className="height-100-percent bg-white mb-50">
+
+				
+				<div style={{marginTop:"50"}} className="height-100-percent bg-white mb-50">
 					<Nav
 						logo={true}
 						active_nearme={true}
@@ -135,14 +140,8 @@ class Home extends Component {
 						history={history}
 						loggedin={user.success}
 					/>
-					{/* Passing slides as props to PromoSlider */}
-					{localStorage.getItem("showPromoSlider") === "true" && (
-						<React.Fragment>
-							
-						</React.Fragment>
-					)}
-
-					{/* retirada do slide */}
+					
+					
 					
 					<RestaurantList user={user}  />
 					<Footer active_nearme={true} />
@@ -152,7 +151,10 @@ class Home extends Component {
 	}
 }
 
+
+
 const mapStateToProps = (state) => ({
+	
 	promo_slides: state.promo_slides.promo_slides,
 	user: state.user.user,
 	locations: state.locations.locations,

@@ -12,10 +12,6 @@ import { getPaymentGateways } from "../../../../services/paymentgateways/actions
 import { placeOrder } from "../../../../services/checkout/actions";
 import { updateUserInfo } from "../../../../services/user/actions";
 import { calculateDistance } from "../../../helpers/calculateDistance";
-import { calculateDistanceGoogle } from "../../../helpers/calculateDistanceGoogle";
-import Axios from "axios";
-import { GoogleApiWrapper } from "google-maps-react";
-import { getRestaurantInfoById } from "../../../../services/items/actions";
 
 class PaymentList extends Component {
 	static contextTypes = {
@@ -32,22 +28,10 @@ class PaymentList extends Component {
 		walletChecked: false,
 		canPayFullWithWallet: false,
 		distance: 0,
-		placeOrderError: false,
-		errorMessage: "",
 	};
 
 	componentDidMount() {
 		const { user } = this.props;
-
-		if (localStorage.getItem("activeRestaurant") !== null) {
-			this.props.getRestaurantInfoById(localStorage.getItem("activeRestaurant")).then((response) => {
-				if (response) {
-					if (response.payload.id) {
-						this.__doesRestaurantOperatesAtThisLocation(response.payload);
-					}
-				}
-			});
-		}
 
 		this.props.getPaymentGateways(this.props.user.data.auth_token);
 
@@ -63,6 +47,10 @@ class PaymentList extends Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
+		if (nextProps.restaurant_info.id) {
+			this.__doesRestaurantOperatesAtThisLocation(nextProps.restaurant_info);
+		}
+
 		const { paymentgateways } = this.props;
 		if (paymentgateways !== nextProps.paymentgateways) {
 			this.setState({ loading: false });
@@ -93,42 +81,19 @@ class PaymentList extends Component {
 		//send user lat long to helper, check with the current restaurant lat long and setstate accordingly
 		const { user } = this.props;
 		if (user.success) {
-			let self = this;
+			const distance = calculateDistance(
+				restaurant_info.longitude,
+				restaurant_info.latitude,
+				user.data.default_address.longitude,
+				user.data.default_address.latitude
+			);
 
-			if (localStorage.getItem("enGDMA") === "true") {
-				this.props.handleProcessDistanceCalcLoading(true);
-				calculateDistanceGoogle(
-					restaurant_info.longitude,
-					restaurant_info.latitude,
-					user.data.default_address.longitude,
-					user.data.default_address.latitude,
-					this.props.google,
-					function(distance) {
-						if (localStorage.getItem("userSelected") === "DELIVERY") {
-							if (self.props.restaurant_info.delivery_charge_type === "DYNAMIC") {
-								self.setState({ distance: distance }, () => {
-									//check if restaurant has dynamic delivery charge..
-									self.calculateDynamicDeliveryCharge();
-								});
-							}
-							self.props.handleProcessDistanceCalcLoading(false);
-						}
-					}
-				);
-			} else {
-				const distance = calculateDistance(
-					restaurant_info.longitude,
-					restaurant_info.latitude,
-					user.data.default_address.longitude,
-					user.data.default_address.latitude
-				);
-				if (localStorage.getItem("userSelected") === "DELIVERY") {
-					if (this.props.restaurant_info.delivery_charge_type === "DYNAMIC") {
-						this.setState({ distance: distance }, () => {
-							//check if restaurant has dynamic delivery charge..
-							this.calculateDynamicDeliveryCharge();
-						});
-					}
+			if (localStorage.getItem("userSelected") === "DELIVERY") {
+				if (this.props.restaurant_info.delivery_charge_type === "DYNAMIC") {
+					this.setState({ distance: distance }, () => {
+						//check if restaurant has dynamic delivery charge..
+						this.calculateDynamicDeliveryCharge();
+					});
 				}
 			}
 		}
@@ -222,52 +187,31 @@ class PaymentList extends Component {
 		const { user, cartProducts, coupon, cartTotal } = this.props;
 		if (user.success) {
 			if (localStorage.getItem("userSelected") === "SELFPICKUP") {
-				this.props
-					.placeOrder(
-						user,
-						cartProducts,
-						coupon,
-						JSON.parse(localStorage.getItem("userSetAddress")),
-						localStorage.getItem("orderComment"),
-						cartTotal,
-						method,
-						payment_token,
-						2,
-						this.state.walletChecked,
-						this.state.distance
-					)
-					.then((response) => {
-						if (response) {
-							if (!response.success) {
-								this.setState({ placeOrderError: true, errorMessage: response.message });
-							}
-						}
-					});
+				this.props.placeOrder(
+					user,
+					cartProducts,
+					coupon,
+					JSON.parse(localStorage.getItem("userSetAddress")),
+					localStorage.getItem("orderComment"),
+					cartTotal,
+					method,
+					payment_token,
+					2,
+					this.state.walletChecked
+				);
 			} else {
-				this.props
-					.placeOrder(
-						user,
-						cartProducts,
-						coupon,
-						JSON.parse(localStorage.getItem("userSetAddress")),
-						localStorage.getItem("orderComment"),
-						cartTotal,
-						method,
-						payment_token,
-						1,
-						this.state.walletChecked,
-						this.state.distance
-					)
-					.then((response) => {
-						if (response) {
-							console.log(response);
-							if (!response.success) {
-								console.log("here");
-								this.setState({ placeOrderError: true, errorMessage: response.message });
-								this.resetPage();
-							}
-						}
-					});
+				this.props.placeOrder(
+					user,
+					cartProducts,
+					coupon,
+					JSON.parse(localStorage.getItem("userSetAddress")),
+					localStorage.getItem("orderComment"),
+					cartTotal,
+					method,
+					payment_token,
+					1,
+					this.state.walletChecked
+				);
 			}
 
 			//show progress bar
@@ -286,18 +230,6 @@ class PaymentList extends Component {
 		}
 	};
 
-	resetPage = () => {
-		const progressBar = document.getElementById("progressBar");
-		progressBar.classList.add("hidden");
-		setTimeout(() => {
-			progressBar.style.width = "0%";
-		}, 2200);
-
-		let paymentgatewaysblock = document.getElementsByClassName("paymentGatewayBlock");
-		for (let i = 0; i < paymentgatewaysblock.length; i++) {
-			paymentgatewaysblock[i].classList.remove("no-click");
-		}
-	};
 	// Calculating total with/without coupon/tax
 	getTotalAfterCalculation = () => {
 		const { coupon, restaurant_info, user } = this.props;
@@ -305,17 +237,10 @@ class PaymentList extends Component {
 		let calc = 0;
 		if (coupon.code) {
 			if (coupon.discount_type === "PERCENTAGE") {
-				let percentage_discount = formatPrice((coupon.discount / 100) * parseFloat(total));
-				if (coupon.max_discount) {
-					if (parseFloat(percentage_discount) >= coupon.max_discount) {
-						percentage_discount = coupon.max_discount;
-					}
-				}
-				coupon.appliedAmount = percentage_discount;
 				calc = formatPrice(
 					formatPrice(
 						parseFloat(total) -
-							percentage_discount +
+							formatPrice((coupon.discount / 100) * parseFloat(total)) +
 							parseFloat(restaurant_info.restaurant_charges || 0.0) +
 							parseFloat(this.state.delivery_charges || 0.0)
 					)
@@ -357,47 +282,43 @@ class PaymentList extends Component {
 	__handleRazorPay = () => {
 		let self = this;
 		this.setState({ razorpay_opened: true });
-		const totalAmount = formatPrice(parseFloat(this.getTotalAfterCalculation()));
+		const totalAmount = formatPrice(parseFloat(this.getTotalAfterCalculation() * 100));
+		const options = {
+			key: localStorage.getItem("razorpayKeyId"),
+			amount: totalAmount,
+			name: this.props.user.data.name,
+			currency: localStorage.getItem("currencyId"),
+			handler(response) {
+				const paymentId = response.razorpay_payment_id;
+				const url = RAZORPAY_PAYMENT_URL + paymentId + "/" + totalAmount;
+				// Using server endpoints to capture the payment
+				fetch(url, {
+					method: "get",
+					headers: {
+						"Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+					},
+				})
+					.then((resp) => resp.json())
+					.then(function(data) {
+						self.setState({ razorpay_opened: false, razorpay_success: true });
+						const payment_token = "";
+						const method = "RAZORPAY";
+						self.__placeOrder(payment_token, method);
+					})
+					.catch(function(error) {
+						self.setState({ razorpay_opened: false, razorpay_success: false });
+					});
+			},
+			modal: {
+				ondismiss: function() {
+					console.log("closed");
+					self.setState({ razorpay_opened: false, razorpay_success: false });
+				},
+			},
+		};
+		const rzp1 = new window.Razorpay(options);
 
-		Axios.post(RAZORPAY_PAYMENT_URL, {
-			totalAmount: totalAmount,
-		})
-			.then((res) => {
-				// console.log(res.data.response.id);
-				if (res.data.razorpay_success) {
-					const options = {
-						key: localStorage.getItem("razorpayKeyId"),
-						amount: totalAmount,
-						name: localStorage.getItem("storeName"),
-						currency: localStorage.getItem("currencyId"),
-						order_id: res.data.response.id,
-						handler(response) {
-							// console.log("Final Response", response);
-							self.setState({ razorpay_opened: false, razorpay_success: true });
-							const payment_token = "";
-							const method = "RAZORPAY";
-							self.__placeOrder(payment_token, method);
-						},
-						modal: {
-							ondismiss: function() {
-								console.log("closed");
-								self.setState({ razorpay_opened: false, razorpay_success: false });
-							},
-						},
-						prefill: {
-							name: this.props.user.data.name,
-							email: this.props.user.data.email,
-							contact: this.props.user.data.phone,
-						},
-					};
-					const rzp1 = new window.Razorpay(options);
-
-					rzp1.open();
-				}
-			})
-			.catch(function(error) {
-				console.log(error);
-			});
+		rzp1.open();
 	};
 	/* END Razorpay */
 
@@ -408,12 +329,6 @@ class PaymentList extends Component {
 		};
 		return (
 			<React.Fragment>
-				{this.state.placeOrderError && (
-					<div className="auth-error ongoing-payment">
-						<div className="error-shake">{this.state.errorMessage}</div>
-					</div>
-				)}
-
 				{this.props.paymentgateways.some((gateway) => gateway.name === "Razorpay") && (
 					<Helmet>
 						<script src="https://checkout.razorpay.com/v1/checkout.js" />
@@ -430,7 +345,6 @@ class PaymentList extends Component {
 							</div>
 						</React.Fragment>
 					))}
-
 				<div className="col-12 mb-50">
 					{this.state.loading ? (
 						<div className="row">
@@ -582,10 +496,7 @@ class PaymentList extends Component {
 								</div>
 								{this.state.canPayFullWithWallet && (
 									<React.Fragment>
-										<div
-											className="col-12 paymentGatewayBlock"
-											onClick={() => this.__placeOrder("", "WALLET")}
-										>
+										<div className="col-12" onClick={() => this.__placeOrder("", "WALLET")}>
 											<p className="mb-1" />
 											<div className="block block-link-shadow text-left shadow-light">
 												<div className="block-content block-content-full clearfix py-3 payment-select-block">
@@ -637,18 +548,6 @@ class PaymentList extends Component {
 													email={this.props.user.data.email}
 													token={this.onToken}
 													opened={this.onOpened}
-													amount={parseFloat(this.getTotalAfterCalculation() * 100)}
-													currency={localStorage.getItem("currencyId")}
-													alipay={
-														localStorage.getItem("stripeAcceptAliPay") === "true"
-															? true
-															: false
-													}
-													bitcoin={
-														localStorage.getItem("stripeAcceptBitCoin") === "true"
-															? true
-															: false
-													}
 												>
 													<div className="col-12 p-0">
 														<div className="block block-link-shadow text-left shadow-light">
@@ -672,30 +571,7 @@ class PaymentList extends Component {
 												</StripeCheckout>
 											)}
 										</div>
-										{gateway.name === "COD" && (
-											<div
-												className="col-12 paymentGatewayBlock"
-												onClick={() => this.__placeOrder("", "COD")}
-											>
-												<div className="block block-link-shadow text-left shadow-light">
-													<div className="block-content block-content-full clearfix py-3 payment-select-block">
-														<div className="float-right mt-10">
-															<img
-																src="/assets/img/various/cod.png"
-																alt={gateway.name}
-																className="img-fluid"
-															/>
-														</div>
-														<div className="font-size-h3 font-w600">
-															{localStorage.getItem("checkoutCodText")}
-														</div>
-														<div className="font-size-sm font-w600 text-muted">
-															{localStorage.getItem("checkoutCodSubText")}
-														</div>
-													</div>
-												</div>
-											</div>
-										)}
+										
 										{gateway.name === "Razorpay" && (
 											<div
 												className="col-12 paymentGatewayBlock"
@@ -734,7 +610,6 @@ class PaymentList extends Component {
 													amount={parseInt(parseFloat(this.getTotalAfterCalculation() * 100))}
 													paystackkey={localStorage.getItem("paystackPublicKey")}
 													tag="button"
-													currency={localStorage.getItem("currencyId")}
 												/>
 											</div>
 										)}
@@ -790,12 +665,7 @@ const mapStateToProps = (state) => ({
 	paymentgateways: state.paymentgateways.paymentgateways,
 	restaurant_info: state.items.restaurant_info,
 });
-
 export default connect(
 	mapStateToProps,
-	{ getPaymentGateways, placeOrder, updateUserInfo, getRestaurantInfoById }
-)(
-	GoogleApiWrapper({
-		apiKey: localStorage.getItem("googleApiKey"),
-	})(PaymentList)
-);
+	{ getPaymentGateways, placeOrder, updateUserInfo }
+)(PaymentList);

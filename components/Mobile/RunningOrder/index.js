@@ -129,11 +129,17 @@ class RunningOrder extends Component {
 								<div className="block block-link-shadow pb-2 m-0 delivery-assigned-block">
 									<div className="block-content block-content-full clearfix py-0">
 										<div className="float-right">
-											<img
-												src={"/assets/img/delivery/" + user.delivery_details.photo}
-												className="img-fluid img-avatar"
-												alt={user.delivery_details.name}
-											/>
+											
+											
+
+<img
+src={"https://image.flaticon.com/icons/png/512/2316/2316075.png"}
+className="img-fluid img-avatar"
+alt={user.delivery_details.name}
+/>
+												
+											
+											
 										</div>
 										<div className="float-left mt-20" style={{ width: "75%" }}>
 											<div className="font-w600 font-size-h5 mb-5">
@@ -148,13 +154,25 @@ class RunningOrder extends Component {
 												</span>
 											</div>
 											<div className="">
-												<a
-													className="btn btn-get-direction mt-2"
+
+											<a style={{ borderRadius:7}}
+													className="btn btn-get-direction mt-2" target="_blank"
 													href={"tel:" + user.delivery_details.phone}
 												>
-													{localStorage.getItem("callNowButton")}{" "}
-													<i className="si si-call-out" />
+													Ligar para o entregador
+													
 												</a>
+
+
+												<a style={{backgroundColor:"red",color:"#fff", borderRadius:7}}
+													className="btn btn-get-direction mt-2" target="_blank"
+													href={"https://api.whatsapp.com/send?phone=55" + user.delivery_details.phone}
+												>
+													Chat com entregador
+													
+												</a>
+
+												
 											</div>
 										</div>
 									</div>

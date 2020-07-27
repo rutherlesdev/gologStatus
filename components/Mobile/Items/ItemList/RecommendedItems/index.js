@@ -35,11 +35,13 @@ class RecommendedItems extends Component {
 							>
 								<LazyLoad>
 									<Link to={restaurant.slug + "/" + product.id}>
-										<img
-											src={product.image}
-											alt={product.name}
-											className="recommended-item-image"
-										/>
+										<Fade duration={500}>
+											<img
+												src={product.image}
+												alt={product.name}
+												className="img-fluid recommended-item-image"
+											/>
+										</Fade>
 									</Link>
 
 									<React.Fragment>
@@ -74,7 +76,7 @@ class RecommendedItems extends Component {
 									</React.Fragment>
 								</LazyLoad>
 								<div className="my-2 recommended-item-meta">
-									<div className="px-5 text-left recommended-v2-ellipsis-meta">
+									<div className="px-5 text-left">
 										{localStorage.getItem("showVegNonVegBadge") === "true" &&
 											product.is_veg !== null && (
 												<React.Fragment>
@@ -155,66 +157,57 @@ class RecommendedItems extends Component {
 										className="d-flex btn-group btn-group-sm my-5 btn-full justify-content-around"
 										role="group"
 										aria-label="btnGroupIcons1"
-										style={{ height: "40px" }}
 									>
-										{product.is_active ? (
-											<React.Fragment>
-												{product.addon_categories.length ? (
-													<button
-														disabled
-														type="button"
-														className="btn btn-add-remove"
-														style={{
-															color: localStorage.getItem("cartColor-bg"),
-														}}
-													>
-														<span className="btn-dec">-</span>
-														<Ink duration="500" />
-													</button>
-												) : (
-													<button
-														type="button"
-														className="btn btn-add-remove"
-														style={{
-															color: localStorage.getItem("cartColor-bg"),
-														}}
-														onClick={() => {
-															removeProduct(product);
-															this.forceStateUpdate();
-														}}
-													>
-														<span className="btn-dec">-</span>
-														<Ink duration="500" />
-													</button>
-												)}
-												{product.addon_categories.length ? (
-													<Customization
-														product={product}
-														addProduct={addProduct}
-														update={this.props.forceStateUpdate}
-														forceUpdate={this.forceStateUpdate}
-													/>
-												) : (
-													<button
-														type="button"
-														className="btn btn-add-remove"
-														style={{
-															color: localStorage.getItem("cartColor-bg"),
-														}}
-														onClick={() => {
-															addProduct(product);
-															this.forceStateUpdate();
-														}}
-													>
-														<span className="btn-inc">+</span>
-														<Ink duration="500" />
-													</button>
-												)}
-											</React.Fragment>
+										{product.addon_categories.length ? (
+											<button
+												disabled
+												type="button"
+												className="btn btn-add-remove"
+												style={{
+													color: localStorage.getItem("cartColor-bg"),
+												}}
+											>
+												<span className="btn-dec">-</span>
+												<Ink duration="500" />
+											</button>
 										) : (
-											<div className="text-danger text-item-not-available d-flex align-items-center">
-												{localStorage.getItem("cartItemNotAvailable")}
-											</div>
+											<button
+												type="button"
+												className="btn btn-add-remove"
+												style={{
+													color: localStorage.getItem("cartColor-bg"),
+												}}
+												onClick={() => {
+													removeProduct(product);
+													this.forceStateUpdate();
+												}}
+											>
+												<span className="btn-dec">-</span>
+												<Ink duration="500" />
+											</button>
+										)}
+										{product.addon_categories.length ? (
+											<Customization
+												product={product}
+												addProduct={addProduct}
+												update={this.props.forceStateUpdate}
+												forceUpdate={this.forceStateUpdate}
+											/>
+										) : (
+											<button
+												type="button"
+												className="btn btn-add-remove"
+												style={{
+													color: localStorage.getItem("cartColor-bg"),
+												}}
+												onClick={() => {
+													addProduct(product);
+													this.forceStateUpdate();
+												}}
+											>
+												<span className="btn-inc">+</span>
+												<Ink duration="500" />
+											</button>
 										)}
 									</div>
 								</div>
@@ -227,11 +220,13 @@ class RecommendedItems extends Component {
 							<div className="block-content recommended-item-content py-5 mb-5">
 								<LazyLoad>
 									<Link to={restaurant.slug + "/" + product.id}>
-										<img
-											src={product.image}
-											alt={product.name}
-											className="recommended-item-image"
-										/>
+										<Fade duration={500}>
+											<img
+												src={product.image}
+												alt={product.name}
+												className="img-fluid recommended-item-image"
+											/>
+										</Fade>
 									</Link>
 
 									<React.Fragment>

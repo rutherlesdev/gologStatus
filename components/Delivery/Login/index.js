@@ -7,18 +7,17 @@ import { getSettings } from "../../../services/settings/actions";
 import { loginDeliveryUser } from "../../../services/Delivery/user/actions";
 import { getAllLanguages } from "../../../services/languages/actions";
 import { getSingleLanguageData } from "../../../services/languages/actions";
-import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import { flexbox } from '@material-ui/system';
-import { sizing } from '@material-ui/system';
-import { makeStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
+import Box from '@material-ui/core/Box';
+
+import logo from './img/logo.png'
 
 
 
-
-import Loading from "../../helpers/loading";
+function cadastro () {
+	window.open("https://appchegou.com/public/auth/login")
+	
+}
 
 class Login extends Component {
 	state = {
@@ -30,6 +29,8 @@ class Login extends Component {
 	static contextTypes = {
 		router: () => null,
 	};
+
+	fu
 	componentDidMount() {
 		this.props.getSettings();
 
@@ -82,18 +83,11 @@ class Login extends Component {
 				}
 			}
 		}
-
 	}
 
-
+	
 
 	render() {
-
-
-
-
-
-
 		if (window.innerWidth > 768) {
 			return <Redirect to="/" />;
 		}
@@ -117,62 +111,64 @@ class Login extends Component {
 					twittertitle={localStorage.getItem("seoTwitterTitle")}
 					twitterdescription={localStorage.getItem("seoTwitterDescription")}
 				/>
+				{/* PreLoading the loading gif */}
+
+				<img src="/assets/img/loading-food.gif" className="hidden" alt="prefetching" />
+				
+				<Box marginTop="10" display="flex" justifyContent="center" m={1} p={1} bgcolor="background.paper">
+				<img style={{marginTop:20}} style={{height:"60%",width:"60%",alignItems:"center",alignContent:"center"}} src={logo}/>
+
+         
+        </Box>
+				
 				{this.state.error && (
 					<div className="auth-error">
 						<div className="error-shake">{localStorage.getItem("emailPassDonotMatch")}</div>
 					</div>
 				)}
-				{this.state.loading && <Loading />}
-				<div style={{ backgroundColor: "#fffff" }}>
+				{this.state.loading && (
+					<div className="height-100 overlay-loading">
+						<div>
+							<img src="/assets/img/loading-food.gif" alt={localStorage.getItem("pleaseWaitText")} />
+						</div>
+					</div>
+				)}
+				<div style={{ backgroundColor: "#ffff" }}>
 					<div className="input-group">
 						<div className="input-group-prepend">
 							<div style={{ height: "3.5rem" }} />
 						</div>
 					</div>
-
-
-
+					<img
+						src="https://images.ctfassets.net/2d5q1td6cyxq/3Ei1PJoLvO62qQWaISSO6m/ccb6a0b852264cf45ac3c680d100cdf7/Courier_2x.gif"
+						className="login-image pull-right mr-15"
+						alt="login-header"
+					/>
+					<div className="login-texts px-15 mt-50 pb-20">
+						<span className="login-title">{localStorage.getItem("loginLoginTitle")}</span>
+						<br />
+						<span className="login-subtitle">{localStorage.getItem("loginLoginSubTitle")}</span>
+					</div>
 				</div>
-
-
-				<div style={{ width: '100%', marginBottom: 80 }}>
-					<Box display="flex" justifyContent="center" m={1} p={1} >
-						<Box p={1} >
-							<img style={{ height: 60, width: 240 }} src="https://i.ibb.co/ypMVDQd/logopreto.png" />
-
-						</Box>
-					</Box>
-				</div>
-
-
-
-
-
-
-
-
-				<div className="height-70 " style={{ backgroundColor: "#2bfb2e" }}>
-					<form onSubmit={this.handleLogin}>
+				<div style={{backgroundColor:"#72e832"}} className="height-70 ">
+					<form style={{backgroundColor:"#72e832"}} onSubmit={this.handleLogin}>
 						<div className="form-group px-15 pt-30">
 							<label className="col-12 edit-address-input-label">
 								{localStorage.getItem("loginLoginEmailLabel")}
 							</label>
 							<div className="col-md-9 pb-5">
-								<input style={{ borderRadius: 9, backgroundColor: "#ffffff" }}
-
-
-
+								<input style={{borderRadius:9,backgroundColor:"#fff"}}
 									type="text"
 									name="email"
 									onChange={this.handleInputEmail}
 									className="form-control edit-address-input"
 								/>
 							</div>
-							<label className="col-12 edit-address-input-label" >
+							<label className="col-12 edit-address-input-label">
 								{localStorage.getItem("loginLoginPasswordLabel")}
 							</label>
 							<div className="col-md-9">
-								<input style={{ borderRadius: 9, backgroundColor: "#FFFfff" }}
+								<input style={{borderRadius:9 , backgroundColor:"#fff"}}
 									type="password"
 									name="password"
 									onChange={this.handleInputPassword}
@@ -180,25 +176,37 @@ class Login extends Component {
 								/>
 							</div>
 						</div>
-
-						<Box display="flex" justifyContent="center" >
-
-							<Button style={{ width: 300, marginTop: 40 }}
+						<div className="mt-20 px-15 pt-15 ">
+							
+							<button 
 								type="submit"
-								variant="contained"
-								color="primary"
-								size="large"
-								startIcon={<ExitToAppIcon />}
+								className="btn btn-main"
+								style={{ backgroundColor: "white",borderRadius:7,color:"#000"}}
 							>
-								Entre
-                        </Button> </Box>
+								{localStorage.getItem("loginLoginTitle")}
+							</button>
+						</div>
 
-						<Box display="flex" justifyContent="center" m={1} p={1} >
-							<a style={{ fontSize: 20 }} href="https://appchegou.com/public/auth/cadastro"><b style={{ color: "0A3D0B" }}>Cadastre-se</b></a> </Box>
+                 
+
+						<div className="mt-20 px-15 pt-15 button-block">
+							<button
+						
+								onClick={cadastro}
+
+								className="btn btn-main"
+								style={{ backgroundColor: "#0057ff",borderRadius:7}}
+							>
+								Cadastre-se
+							</button>
+						</div>
+
+
+
 					</form>
 
 					{this.props.languages && this.props.languages.length > 1 && (
-						<div className="mt-100 d-flex align-items-center justify-content-center">
+						<div style={{backgroundColor:"#72e832"}} className="mt-100 d-flex align-items-center justify-content-center">
 							<div className="mr-2">{localStorage.getItem("changeLanguageText")}</div>
 							<select
 								onChange={this.handleOnChange}

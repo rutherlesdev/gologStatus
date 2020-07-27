@@ -29,7 +29,7 @@ class PromoSlider extends Component {
 							<rect x="228" y="0" rx="4" ry="4" width="168" height="168" />
 						</ContentLoader>
 					) : (
-						slides.map((slide) =>
+						slides.map(slide =>
 							slide.url.indexOf("http://") === 0 || slide.url.indexOf("https://") === 0 ? (
 								<a
 									href={slide.url}
@@ -43,10 +43,10 @@ class PromoSlider extends Component {
 											src={slide.image}
 											alt={slide.name}
 											className={`slider-wrapper__img slider-cust-img ${!secondarySlider &&
-												"slider-wrapper__img-shadow"} custom-promo-img`}
+												"slider-wrapper__img-shadow"} `}
 											style={{
 												height: (12 / 5) * size + "rem",
-												width: (12 / 5) * size + "rem",
+												width: (12 / 5) * size + "rem"
 											}}
 										/>
 									</LazyLoad>
@@ -64,10 +64,10 @@ class PromoSlider extends Component {
 											src={slide.image}
 											alt={slide.name}
 											className={`slider-wrapper__img slider-cust-img ${!secondarySlider &&
-												"slider-wrapper__img-shadow"} custom-promo-img`}
+												"slider-wrapper__img-shadow"} `}
 											style={{
 												height: (12 / 5) * size + "rem",
-												width: (12 / 5) * size + "rem",
+												width: (12 / 5) * size + "rem"
 											}}
 										/>
 									</LazyLoad>

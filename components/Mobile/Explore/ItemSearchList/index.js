@@ -12,7 +12,7 @@ class ItemSearchList extends Component {
 		return (
 			<React.Fragment>
 				<div className="bg-white mb-50 mt-10">
-					<h5 className="px-15 mb-1 text-muted">Digite o nome do bairro </h5>
+					<h5 className="px-15 mb-1 text-muted">{localStorage.getItem("exploreItemsText")}</h5>
 					{items.map((item) => (
 						<div key={item.id} className="col-xs-12 col-sm-12 restaurant-block">
 							<Link
@@ -55,7 +55,7 @@ class ItemSearchList extends Component {
 									</div>
 									<div className="font-size-sm font-w600 truncate-text">
 										<span className="text-muted">
-											Digite o nome do bairro
+											{localStorage.getItem("exlporeByRestaurantText")}
 										</span>{" "}
 										<span style={{ color: localStorage.getItem("storeColor") }}>
 											{item.restaurant.name}

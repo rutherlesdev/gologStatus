@@ -12,7 +12,6 @@ import Meta from "../../helpers/meta";
 import { GET_ADDRESS_FROM_COORDINATES } from "../../../configs";
 import Axios from "axios";
 import SimpleReactValidator from "simple-react-validator";
-import Loading from "../../helpers/loading";
 
 export class GeoLocationPage extends Component {
 	constructor() {
@@ -184,7 +183,13 @@ export class GeoLocationPage extends Component {
 					twittertitle={localStorage.getItem("seoTwitterTitle")}
 					twitterdescription={localStorage.getItem("seoTwitterDescription")}
 				/>
-				{this.state.loading && <Loading />}
+				{this.state.loading && (
+					<div className="height-100 overlay-loading">
+						<div>
+							<img src="/assets/img/loading-food.gif" alt={localStorage.getItem("pleaseWaitText")} />
+						</div>
+					</div>
+				)}
 
 				<GoogleMap
 					reverseLookup={this.reverseLookup}
@@ -280,21 +285,19 @@ export class GeoLocationPage extends Component {
 						</React.Fragment>
 					)}
 				</div>
-				{!this.state.dragging && (
-					<button
-						type="button"
-						className="btn-save-address"
-						onClick={this.handleSaveNewAddress}
-						style={{
-							backgroundColor: localStorage.getItem("storeColor"),
-							position: "fixed",
-							bottom: "0",
-						}}
-					>
-						{localStorage.getItem("buttonSaveAddress")}
-						<Ink duration={200} />
-					</button>
-				)}
+				<button
+					type="button"
+					className="btn-save-address"
+					onClick={this.handleSaveNewAddress}
+					style={{
+						backgroundColor: localStorage.getItem("storeColor"),
+						position: "fixed",
+						bottom: "0",
+					}}
+				>
+					{localStorage.getItem("buttonSaveAddress")}
+					<Ink duration={200} />
+				</button>
 			</div>
 		);
 	}

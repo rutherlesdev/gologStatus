@@ -14,9 +14,9 @@ class FirstScreen extends Component {
 	componentDidMount() {
 		//if one config is missing then call the api to fetch settings
 
-		// if (!localStorage.getItem("storeColor")) {
-		// 	this.props.getSettings();
-		// }
+		if (!localStorage.getItem("storeColor")) {
+			this.props.getSettings();
+		}
 
 		if (localStorage.getItem("storeColor")) {
 			setTimeout(() => {
@@ -34,7 +34,7 @@ class FirstScreen extends Component {
 		}
 	};
 
-	handleOnChange = (event) => {
+	handleOnChange = event => {
 		// console.log(event.target.value);
 		this.props.getSingleLanguageData(event.target.value);
 		localStorage.setItem("userPreferedLanguage", event.target.value);
@@ -46,7 +46,7 @@ class FirstScreen extends Component {
 			//settings received, then hide the splash screen after 2s
 			setTimeout(() => {
 				this.removeSplashScreen();
-			}, 1000);
+			}, 2000);
 		}
 
 		if (this.props.languages !== nextProps.languages) {
@@ -55,7 +55,7 @@ class FirstScreen extends Component {
 				// console.log("Called 1");
 			} else {
 				if (nextProps.languages.length) {
-					const id = nextProps.languages.filter((lang) => lang.is_default === 1)[0].id;
+					const id = nextProps.languages.filter(lang => lang.is_default === 1)[0].id;
 					this.props.getSingleLanguageData(id);
 				}
 			}
@@ -89,7 +89,7 @@ class FirstScreen extends Component {
 									className="img-fluid"
 									alt={localStorage.getItem("storeName")}
 									style={{
-										width: "100%",
+										width: "100%"
 									}}
 								/>
 							</div>
@@ -115,7 +115,7 @@ class FirstScreen extends Component {
 												className="img-fluid"
 												style={{
 													filter: loading ? "blur(1.2px) brightness(0.9)" : "none",
-													width: `${window.innerWidth}px`,
+													width: `${window.innerWidth}px`
 												}}
 											/>
 										)}
@@ -135,7 +135,7 @@ class FirstScreen extends Component {
 									className="btn btn-lg btn-setup-location"
 									style={{
 										backgroundColor: localStorage.getItem("storeColor"),
-										position: "relative",
+										position: "relative"
 									}}
 								>
 									{localStorage.getItem("firstScreenSetupLocation")}
@@ -155,18 +155,18 @@ class FirstScreen extends Component {
 								)}
 
 								{this.props.languages && this.props.languages.length > 1 && (
-									<div className="mt-4 d-flex align-items-center justify-content-center mb-100">
+									<div className="mt-4 d-flex align-items-center justify-content-center">
 										<div className="mr-2">{localStorage.getItem("changeLanguageText")}</div>
 										<select
 											onChange={this.handleOnChange}
 											defaultValue={
 												localStorage.getItem("userPreferedLanguage")
 													? localStorage.getItem("userPreferedLanguage")
-													: this.props.languages.filter((lang) => lang.is_default === 1)[0].id
+													: this.props.languages.filter(lang => lang.is_default === 1)[0].id
 											}
 											className="form-control language-select"
 										>
-											{this.props.languages.map((language) => (
+											{this.props.languages.map(language => (
 												<option value={language.id} key={language.id}>
 													{language.language_name}
 												</option>
@@ -183,14 +183,11 @@ class FirstScreen extends Component {
 	}
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
 	settings: state.settings.settings,
 	user: state.user.user,
 	languages: state.languages.languages,
-	language: state.languages.language,
+	language: state.languages.language
 });
 
-export default connect(
-	mapStateToProps,
-	{ getSettings, getSingleLanguageData }
-)(FirstScreen);
+export default connect(mapStateToProps, { getSettings, getSingleLanguageData })(FirstScreen);

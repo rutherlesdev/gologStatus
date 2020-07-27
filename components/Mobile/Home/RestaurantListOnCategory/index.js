@@ -235,7 +235,7 @@ export class RestaurantListOnCategory extends Component {
 					</ContentLoader>
 				) : (
 					<React.Fragment>
-						{this.props.filtered_restaurants.length === 0 ? (
+						{this.props.filtered_restaurants.length !== 0 ? (
 							<React.Fragment>
 								<div className="d-flex justify-content-center mt-100">
 									<img

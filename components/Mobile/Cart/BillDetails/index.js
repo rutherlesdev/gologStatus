@@ -11,6 +11,7 @@ class BillDetails extends Component {
 
 	componentDidMount() {
 		if (localStorage.getItem("userSelected") === "SELFPICKUP") {
+			console.log("here");
 			this.setState({ delivery_charges: 0 });
 		} else {
 			this.setState({ delivery_charges: this.props.restaurant_info.delivery_charges });
@@ -68,17 +69,10 @@ class BillDetails extends Component {
 		let calc = 0;
 		if (coupon.code) {
 			if (coupon.discount_type === "PERCENTAGE") {
-				let percentage_discount = formatPrice((coupon.discount / 100) * parseFloat(total));
-				if (coupon.max_discount) {
-					if (parseFloat(percentage_discount) >= coupon.max_discount) {
-						percentage_discount = coupon.max_discount;
-					}
-				}
-				coupon.appliedAmount = percentage_discount;
 				calc = formatPrice(
 					formatPrice(
 						parseFloat(total) -
-							percentage_discount +
+							formatPrice((coupon.discount / 100) * parseFloat(total)) +
 							parseFloat(restaurant_info.restaurant_charges || 0.0) +
 							parseFloat(this.state.delivery_charges || 0.0)
 					)
@@ -137,14 +131,7 @@ class BillDetails extends Component {
 									<div className="flex-auto text-right coupon-text">
 										<span>-</span>
 										{coupon.discount_type === "PERCENTAGE" ? (
-											<React.Fragment>
-												{coupon.discount}% (
-												{localStorage.getItem("currencySymbolAlign") === "left" &&
-													localStorage.getItem("currencyFormat") + coupon.appliedAmount}
-												{localStorage.getItem("currencySymbolAlign") === "right" &&
-													coupon.appliedAmount + localStorage.getItem("currencyFormat")}
-												)
-											</React.Fragment>
+											coupon.discount + "%"
 										) : (
 											<React.Fragment>
 												{localStorage.getItem("currencySymbolAlign") === "left" &&

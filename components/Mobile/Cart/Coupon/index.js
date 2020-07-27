@@ -7,9 +7,7 @@ import { connect } from "react-redux";
 class Coupon extends Component {
 	state = {
 		inputCoupon: "",
-		couponFailed: false,
-		couponFailedType: "",
-		couponSubtotalMessage: "",
+		couponFailed: true
 	};
 	// componentDidMount() {
 	//     localStorage.removeItem("appliedCoupon");
@@ -21,32 +19,28 @@ class Coupon extends Component {
 			this.props.applyCoupon(localStorage.getItem("appliedCoupon"), this.props.restaurant_info.id);
 		}
 	}
-	componentWillReceiveProps(nextProps) {
+	componentWillReceiveProps(newProps) {
 		const { coupon } = this.props;
 		//check if props changed after calling the server
-		if (coupon !== nextProps.coupon) {
-			//if nextProps.coupon is successful then
-			if (nextProps.coupon.success) {
-				localStorage.setItem("appliedCoupon", nextProps.coupon.code);
+		if (coupon !== newProps.coupon) {
+			//if newProps.coupon is false then, coupon is invalid
+			if (!newProps.coupon) {
+				localStorage.removeItem("appliedCoupon");
 				this.setState({ couponFailed: false });
 			} else {
-				// coupon is invalid
-				localStorage.removeItem("appliedCoupon");
-				this.setState({
-					couponFailed: true,
-					couponFailedType: nextProps.coupon.type,
-					couponSubtotalMessage: nextProps.coupon.message,
-				});
+				// coupon is valid
+				localStorage.setItem("appliedCoupon", newProps.coupon.code);
+				this.setState({ couponFailed: true });
 			}
 		}
 	}
-	handleInput = (event) => {
+	handleInput = event => {
 		this.setState({ inputCoupon: event.target.value });
 	};
 
-	handleSubmit = (event) => {
+	handleSubmit = event => {
 		event.preventDefault();
-		this.props.applyCoupon(this.state.inputCoupon, this.props.restaurant_info.id, this.props.subtotal);
+		this.props.applyCoupon(this.state.inputCoupon, this.props.restaurant_info.id);
 	};
 
 	// componentWillUnmount() {
@@ -84,35 +78,24 @@ class Coupon extends Component {
 					<div className="coupon-status">
 						{coupon.code && (
 							<div className="coupon-success pt-10 pb-10">
-								{localStorage.getItem("showCouponDescriptionOnSuccess") === "true" ? (
-									<React.Fragment>{coupon.description}</React.Fragment>
+								{'"' + coupon.code + '"'} {localStorage.getItem("cartApplyCoupon")}{" "}
+								{coupon.discount_type === "PERCENTAGE" ? (
+									coupon.discount + "%"
 								) : (
 									<React.Fragment>
-										{'"' + coupon.code + '"'} {localStorage.getItem("cartApplyCoupon")}{" "}
-										{coupon.discount_type === "PERCENTAGE" ? (
-											coupon.discount + "%"
-										) : (
-											<React.Fragment>
-												{localStorage.getItem("currencySymbolAlign") === "left" &&
-													localStorage.getItem("currencyFormat") + coupon.discount}
-												{localStorage.getItem("currencySymbolAlign") === "right" &&
-													coupon.discount + localStorage.getItem("currencyFormat")}{" "}
-												{localStorage.getItem("cartCouponOffText")}
-											</React.Fragment>
-										)}
+										{localStorage.getItem("currencySymbolAlign") === "left" &&
+											localStorage.getItem("currencyFormat") + coupon.discount}
+										{localStorage.getItem("currencySymbolAlign") === "right" &&
+											coupon.discount + localStorage.getItem("currencyFormat")}{" "}
+										{localStorage.getItem("cartCouponOffText")}
 									</React.Fragment>
 								)}
 							</div>
 						)}
 						{/* Coupon is not applied, then coupon state is true */}
-						{this.state.couponFailed &&
-							(this.state.couponFailedType === "MINSUBTOTAL" ? (
-								<div className="coupon-fail pt-10 pb-10">{this.state.couponSubtotalMessage}</div>
-							) : (
-								<div className="coupon-fail pt-10 pb-10">
-									{localStorage.getItem("cartInvalidCoupon")}
-								</div>
-							))}
+						{!this.state.couponFailed && (
+							<div className="coupon-fail pt-10 pb-10">{localStorage.getItem("cartInvalidCoupon")}</div>
+						)}
 					</div>
 				</div>
 			</React.Fragment>
@@ -120,12 +103,9 @@ class Coupon extends Component {
 	}
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
 	coupon: state.coupon.coupon,
-	restaurant_info: state.items.restaurant_info,
+	restaurant_info: state.items.restaurant_info
 });
 
-export default connect(
-	mapStateToProps,
-	{ applyCoupon }
-)(Coupon);
+export default connect(mapStateToProps, { applyCoupon })(Coupon);

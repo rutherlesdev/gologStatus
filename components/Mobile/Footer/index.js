@@ -40,11 +40,7 @@ class Footer extends Component {
 					<NavLink to="/" className="col footer-links px-2 py-1">
 						<i className="si si-pointer fa-2x" /> <br />
 						<span className={this.state.active_nearme ? "active-footer-tab" : ""}>
-							{this.state.active_nearme ? (
-								localStorage.getItem("footerNearme")
-							) : (
-								<span> Serviços</span>
-							)}
+							Serviços
 						</span>
 					</NavLink>
 					<NavLink to="/alerts" className="col footer-links px-2 py-1">
@@ -59,7 +55,7 @@ class Footer extends Component {
 							{this.state.active_alerts ? (
 								localStorage.getItem("footerAlerts")
 							) : (
-								<span> Mensagens</span>
+								<span> {localStorage.getItem("footerAlerts")}</span>
 							)}
 						</span>
 					</NavLink>
@@ -67,9 +63,7 @@ class Footer extends Component {
 					<NavLink to="/cart" className="col footer-links px-2 py-1">
 						<i className="si si-bag fa-2x" /> <br />
 						<span className={this.state.active_cart ? "active-footer-tab" : ""}>
-							{this.state.active_cart
-								? localStorage.getItem("footerCart")
-								: localStorage.getItem("footerCart")}
+							Pedidos
 							<span
 								className="cart-quantity-badge"
 								style={{ backgroundColor: localStorage.getItem("storeColor") }}

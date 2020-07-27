@@ -9,22 +9,19 @@ import Ink from "react-ink";
 import { Redirect } from "react-router";
 import { connect } from "react-redux";
 import { updateUserInfo } from "../../../../services/user/actions";
-import Loading from "../../../helpers/loading";
 
 class Addresses extends Component {
 	static contextTypes = {
-		router: () => null,
+		router: () => null
 	};
 
 	state = {
 		no_address: false,
 		loading: false,
-		restaurant_id: null,
+		restaurant_id: null
 	};
 
 	componentDidMount() {
-		document.getElementsByTagName("body")[0].classList.add("bg-light");
-
 		const { user } = this.props;
 		if (typeof this.props.location.state !== "undefined") {
 			this.setState({ restaurant_id: this.props.location.state.restaurant_id }, () => {
@@ -52,7 +49,7 @@ class Addresses extends Component {
 		this.setState({ loading: false });
 	}
 
-	handleSaveNewAddress = (data) => {
+	handleSaveNewAddress = data => {
 		const { user } = this.props;
 		if (user.success) {
 			this.setState({ loading: true });
@@ -64,39 +61,31 @@ class Addresses extends Component {
 		const { user } = this.props;
 		if (user.success) {
 			this.props.setDefaultAddress(user.data.id, address_id, user.data.auth_token).then(() => {
-				this.setState({ loading: true });
-				const saveUserSetAddress = new Promise((resolve) => {
+				const saveUserSetAddress = new Promise(resolve => {
 					const userSetAddress = {
 						lat: address.latitude,
 						lng: address.longitude,
 						address: address.address,
 						house: address.house,
-						tag: address.tag,
+						tag: address.tag
 					};
 					localStorage.setItem("userSetAddress", JSON.stringify(userSetAddress));
 					resolve("Address Saved");
 				});
 				saveUserSetAddress.then(() => {
-					this.setState({ loading: false });
-					// console.log("came here");
 					this.context.router.history.goBack();
 				});
 			});
 		}
 	};
 
-	handleDeleteAddress = (address_id) => {
+	handleDeleteAddress = address_id => {
 		const { user } = this.props;
 		if (user.success) {
 			this.setState({ loading: true });
 			this.props.deleteAddress(user.data.id, address_id, user.data.auth_token);
 		}
 	};
-
-	componentWillUnmount() {
-		document.getElementsByTagName("body")[0].classList.remove("bg-light");
-	}
-
 	render() {
 		if (window.innerWidth > 768) {
 			return <Redirect to="/" />;
@@ -115,7 +104,11 @@ class Addresses extends Component {
 		return (
 			<React.Fragment>
 				{this.state.loading ? (
-					<Loading />
+					<div className="height-100 overlay-loading">
+						<div>
+							<img src="/assets/img/loading-food.gif" alt={localStorage.getItem("pleaseWaitText")} />
+						</div>
+					</div>
 				) : (
 					<React.Fragment>
 						<BackWithSearch
@@ -124,7 +117,7 @@ class Addresses extends Component {
 							title={localStorage.getItem("accountManageAddress")}
 							disable_search={true}
 						/>
-						<div className="block-content block-content-full pt-80 pb-80 height-100-percent">
+						<div className="block-content block-content-full bg-white pt-80 pb-80 height-100-percent">
 							{addresses.length === 0 && !this.state.no_address && (
 								<ContentLoader
 									height={600}
@@ -149,9 +142,13 @@ class Addresses extends Component {
 									<rect x="0" y={90 + 340} rx="0" ry="0" width="100" height="18" />
 								</ContentLoader>
 							)}
-
-							{addresses.length ? (
-								addresses.map((address) => (
+							{addresses.length === 0 && (
+								<div className="text-center mt-50 font-w600 text-muted">
+									{localStorage.getItem("noAddressText")}
+								</div>
+							)}
+							{addresses.length &&
+								addresses.map(address => (
 									<AddressList
 										handleDeleteAddress={this.handleDeleteAddress}
 										deleteButton={true}
@@ -161,18 +158,13 @@ class Addresses extends Component {
 										fromCartPage={this.state.restaurant_id === null ? false : true}
 										handleSetDefaultAddress={this.handleSetDefaultAddress}
 									/>
-								))
-							) : (
-								<div className="text-center mt-50 font-w600 text-muted">
-									{localStorage.getItem("noAddressText")}
-								</div>
-							)}
+								))}
 						</div>
 						<DelayLink
 							to="/search-location"
 							className="btn-new-address"
 							style={{
-								backgroundColor: localStorage.getItem("storeColor"),
+								backgroundColor: localStorage.getItem("storeColor")
 							}}
 						>
 							{localStorage.getItem("buttonNewAddress")}
@@ -185,18 +177,15 @@ class Addresses extends Component {
 	}
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
 	user: state.user.user,
-	addresses: state.addresses.addresses,
+	addresses: state.addresses.addresses
 });
 
-export default connect(
-	mapStateToProps,
-	{
-		getAddresses,
-		saveAddress,
-		deleteAddress,
-		updateUserInfo,
-		setDefaultAddress,
-	}
-)(Addresses);
+export default connect(mapStateToProps, {
+	getAddresses,
+	saveAddress,
+	deleteAddress,
+	updateUserInfo,
+	setDefaultAddress
+})(Addresses);

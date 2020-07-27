@@ -52,7 +52,7 @@ class RestaurantInfoCart extends Component {
 											<i
 												className="fa fa-star"
 												style={{
-													color: localStorage.getItem("storeColor"),
+													color: localStorage.getItem("storeColor")
 												}}
 											/>{" "}
 											{restaurant.rating}
@@ -62,19 +62,7 @@ class RestaurantInfoCart extends Component {
 											{localStorage.getItem("homePageMinsText")}
 										</div>
 										<div className="col-6 p-0 text-center">
-											<i className="si si-wallet" />{" "}
-											{localStorage.getItem("currencySymbolAlign") === "left" && (
-												<React.Fragment>
-													{localStorage.getItem("currencyFormat")}
-													{restaurant.price_range}{" "}
-												</React.Fragment>
-											)}
-											{localStorage.getItem("currencySymbolAlign") === "right" && (
-												<React.Fragment>
-													{restaurant.price_range}
-													{localStorage.getItem("currencyFormat")}{" "}
-												</React.Fragment>
-											)}
+											<i className="si si-wallet" /> {restaurant.price_range}{" "}
 											{localStorage.getItem("homePageForTwoText")}
 										</div>
 									</div>

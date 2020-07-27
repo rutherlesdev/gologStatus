@@ -6,10 +6,10 @@ import Modal from "react-responsive-modal";
 
 class Customization extends Component {
 	state = {
-		open: false,
+		open: false
 	};
 
-	_processAddons = (product) => {
+	_processAddons = product => {
 		let addons = [];
 		addons["selectedaddons"] = [];
 
@@ -19,7 +19,7 @@ class Customization extends Component {
 				addon_category_name: radio[i].name,
 				addon_id: radio[i].getAttribute("data-addon-id"),
 				addon_name: radio[i].getAttribute("data-addon-name"),
-				price: radio[i].value,
+				price: radio[i].value
 			});
 		}
 
@@ -30,7 +30,7 @@ class Customization extends Component {
 				addon_category_name: checkboxes[i].name,
 				addon_id: checkboxes[i].getAttribute("data-addon-id"),
 				addon_name: checkboxes[i].getAttribute("data-addon-name"),
-				price: checkboxes[i].value,
+				price: checkboxes[i].value
 			});
 		}
 
@@ -52,7 +52,7 @@ class Customization extends Component {
 					type="button"
 					className="btn btn-add-remove"
 					style={{
-						color: localStorage.getItem("cartColor-bg"),
+						color: localStorage.getItem("cartColor-bg")
 					}}
 					onClick={this.handlePopupOpen}
 				>
@@ -63,11 +63,11 @@ class Customization extends Component {
 					<div
 						style={{
 							marginTop: "5rem",
-							textAlign: "left",
+							textAlign: "left"
 						}}
 					>
 						<h3>{localStorage.getItem("customizationHeading")}</h3>
-						{product.addon_categories.map((addon_category) => (
+						{product.addon_categories.map(addon_category => (
 							<div key={addon_category.id} className="addon-category-block">
 								<React.Fragment>
 									<p className="addon-category-name">{addon_category.name}</p>
@@ -94,23 +94,16 @@ class Customization extends Component {
 															}
 														/>
 														{addon_category.type === "SINGLE" && (
-															<label htmlFor={addon.name} />
+															<label htmlFor={addon.name}></label>
 														)}
 
 														<label className="text addon-label" htmlFor={addon.name}>
 															{addon.name}{" "}
-															{localStorage.getItem("hidePriceWhenZero") === "true" &&
-															addon.price === "0.00" ? null : (
-																<React.Fragment>
-																	{localStorage.getItem("currencySymbolAlign") ===
-																		"left" &&
-																		localStorage.getItem("currencyFormat")}
-																	{addon.price}{" "}
-																	{localStorage.getItem("currencySymbolAlign") ===
-																		"right" &&
-																		localStorage.getItem("currencyFormat")}
-																</React.Fragment>
-															)}
+															{localStorage.getItem("currencySymbolAlign") === "left" &&
+																localStorage.getItem("currencyFormat")}
+															{addon.price}{" "}
+															{localStorage.getItem("currencySymbolAlign") === "right" &&
+																localStorage.getItem("currencyFormat")}
 														</label>
 													</div>
 												</React.Fragment>
@@ -129,7 +122,7 @@ class Customization extends Component {
 							}}
 							style={{
 								backgroundColor: localStorage.getItem("cartColorBg"),
-								color: localStorage.getItem("cartColorText"),
+								color: localStorage.getItem("cartColorText")
 							}}
 						>
 							{localStorage.getItem("customizationDoneBtnText")}

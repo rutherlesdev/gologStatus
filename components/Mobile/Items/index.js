@@ -209,7 +209,7 @@ class Items extends Component {
 									className="btn btn-menu-list"
 									style={{ backgroundColor: localStorage.getItem("storeColor") }}
 								>
-									<i className="si si-list mr-1" /> Cidade
+									<i className="si si-list mr-1" /> {localStorage.getItem("itemsMenuButtonText")}
 									<Ink duration="500" hasTouch={false} />
 								</button>
 							</Flip>

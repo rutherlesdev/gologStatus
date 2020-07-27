@@ -13,7 +13,7 @@ class Hero extends Component {
 	render() {
 		return (
 			<React.Fragment>
-				<div style={{backgroundImage:"https://appchegou.com/capa.png"}} className="container-fluid p-0 ">
+				<div className="container-fluid p-0 main-container-desktop">
 					<div className="container">
 						<div className="row">
 							<div className="col-md-6">

@@ -1,2 +1,2 @@
-export const WEBSITE_URL = "https://goufood.com.br";
-// export const WEBSITE_URL = "https://
+export const WEBSITE_URL = "https://appchegou.com";
+// export const WEBSITE_URL = "https://demo.foodomaa.com";

@@ -15,10 +15,9 @@ export const placeOrder = (
 	method,
 	payment_token,
 	delivery_type,
-	partial_wallet,
-	distance
+	partial_wallet
 ) => (dispatch, getState) => {
-	return Axios.post(PLACE_ORDER_URL, {
+	Axios.post(PLACE_ORDER_URL, {
 		token: user.data.auth_token,
 		user: user,
 		order: order,
@@ -29,10 +28,9 @@ export const placeOrder = (
 		method: method,
 		payment_token: payment_token,
 		delivery_type: delivery_type,
-		partial_wallet: partial_wallet,
-		dis: distance,
+		partial_wallet: partial_wallet
 	})
-		.then((response) => {
+		.then(response => {
 			const checkout = response.data;
 
 			if (checkout.success) {
@@ -54,8 +52,6 @@ export const placeOrder = (
 				localStorage.removeItem("appliedCoupon");
 				const coupon = [];
 				dispatch({ type: APPLY_COUPON, payload: coupon });
-			} else {
-				return checkout;
 			}
 		})
 		.catch(function(error) {

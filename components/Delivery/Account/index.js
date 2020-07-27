@@ -5,6 +5,10 @@ import { connect } from "react-redux";
 import OrdersHistory from "./OrdersHistory";
 import Ink from "react-ink";
 import TransactionList from "../../Mobile/Account/Wallet/TransactionList";
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import { makeStyles } from '@material-ui/core/styles';
+import Fab from '@material-ui/core/Fab';
+
 
 class Account extends Component {
 	state = {
@@ -40,16 +44,22 @@ class Account extends Component {
 		const { delivery_user, logoutDeliveryUser, order_history } = this.props;
 		return (
 			<React.Fragment>
-				<div className="delivery-order-refresh">
-					
-				</div>
+
 				<div className="mb-100" style={{ paddingTop: "4rem" }}>
 					<h3 className="text-center p-3 bg-dark text-light mb-0" style={{ fontSize: "1.2rem" }}>
 						{localStorage.getItem("deliveryWelcomeMessage")} {delivery_user.data.name}
-						<button style={{marginLeft:40}} className="btn btn-get-direction mr-15" onClick={() => logoutDeliveryUser(delivery_user)}>
-						{localStorage.getItem("deliveryLogoutDelivery")} <i className="si si-logout" />
-					</button>
 					</h3>
+					
+					<div className="delivery-order-refresh">
+					
+				
+				
+					<Fab onClick={() => logoutDeliveryUser(delivery_user)} size="small" color="secondary" aria-label="Sair" >
+          <ExitToAppIcon />
+        </Fab>
+				
+				
+				</div>
 					<div className="row gutters-tiny px-15 mt-20">
 						{localStorage.getItem("enableDeliveryGuyEarning") === "true" && (
 							<React.Fragment>

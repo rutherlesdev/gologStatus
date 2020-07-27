@@ -29,7 +29,7 @@ export const getRestaurantInfo = (slug) => (dispatch) => {
 };
 
 export const getRestaurantInfoById = (id) => (dispatch) => {
-	return Axios.post(GET_RESTAURANT_INFO_BY_ID_URL + "/" + id)
+	Axios.post(GET_RESTAURANT_INFO_BY_ID_URL + "/" + id)
 		.then((response) => {
 			const restaurant_info = response.data;
 			return dispatch({
@@ -54,7 +54,7 @@ export const getRestaurantItems = (slug) => (dispatch) => {
 };
 
 export const getSingleItem = (id) => (dispatch) => {
-	return Axios.post(GET_SINGLE_ITEM_URL, {
+	Axios.post(GET_SINGLE_ITEM_URL, {
 		id: id,
 	})
 		.then((response) => {

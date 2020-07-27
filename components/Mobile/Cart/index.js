@@ -12,18 +12,17 @@ import Footer from "../Footer";
 import Ink from "react-ink";
 import Meta from "../../helpers/meta";
 import OrderComment from "./OrderComment";
+import OrderComment2 from "./OrderComment2";
+
 import { Redirect } from "react-router";
 import RestaurantInfoCart from "./RestaurantInfoCart";
 import { calculateDistance } from "../../helpers/calculateDistance";
-import { calculateDistanceGoogle } from "../../helpers/calculateDistanceGoogle";
 import { connect } from "react-redux";
 import { getRestaurantInfoById } from "../../../services/items/actions";
 import { updateCart } from "../../../services/total/actions";
 import { formatPrice } from "../../helpers/formatPrice";
 import { addProduct } from "../../../services/cart/actions";
 import { checkCartItemsAvailability } from "../../../services/confirmCart/actions";
-import { GoogleApiWrapper } from "google-maps-react";
-import Loading from "../../helpers/loading";
 
 class Cart extends Component {
 	static contextTypes = {
@@ -40,23 +39,17 @@ class Cart extends Component {
 		min_order_satisfied: false,
 		process_cart_loading: false,
 		is_all_items_available: false,
-		process_distance_calc_loading: false,
 	};
 
 	componentDidMount() {
 		if (this.props.cartProducts.length) {
 			document.getElementsByTagName("body")[0].classList.add("bg-grey");
+
 			this.checkForItemsAvailability();
 		}
 
 		if (localStorage.getItem("activeRestaurant") !== null) {
-			this.props.getRestaurantInfoById(localStorage.getItem("activeRestaurant")).then((response) => {
-				if (response) {
-					if (response.payload.id) {
-						this.__doesRestaurantOperatesAtThisLocation(response.payload);
-					}
-				}
-			});
+			this.props.getRestaurantInfoById(localStorage.getItem("activeRestaurant"));
 		}
 
 		const { user } = this.props;
@@ -84,6 +77,8 @@ class Cart extends Component {
 
 	componentWillReceiveProps(nextProps) {
 		if (nextProps.restaurant_info.id) {
+			this.__doesRestaurantOperatesAtThisLocation(nextProps.restaurant_info);
+
 			this.__isRestaurantActive(nextProps.restaurant_info);
 
 			this.__checkMinOrderSatisfied(nextProps.restaurant_info, nextProps.cartTotal);
@@ -158,35 +153,15 @@ class Cart extends Component {
 		//send user lat long to helper, check with the current restaurant lat long and setstate accordingly
 		const { user } = this.props;
 		if (user.success) {
-			var distance = 0;
-			let self = this;
-
-			if (localStorage.getItem("enGDMA") === "true") {
-				this.setState({ process_distance_calc_loading: true });
-				distance = calculateDistanceGoogle(
-					restaurant_info.longitude,
-					restaurant_info.latitude,
-					user.data.default_address.longitude,
-					user.data.default_address.latitude,
-					this.props.google,
-					function(distance) {
-						console.log("Distance:", distance);
-						self.setState({ distance: distance, process_distance_calc_loading: false });
-					}
-				);
-			} else {
-				const distance = calculateDistance(
-					restaurant_info.longitude,
-					restaurant_info.latitude,
-					user.data.default_address.longitude,
-					user.data.default_address.latitude
-				);
-				this.setState({ distance: distance });
-			}
-
-			console.log("Distance -> ", this.state.distance);
-
-			if (this.state.distance <= restaurant_info.delivery_radius) {
+			const distance = calculateDistance(
+				restaurant_info.longitude,
+				restaurant_info.latitude,
+				user.data.default_address.longitude,
+				user.data.default_address.latitude
+			);
+			// console.log(distance);
+			this.setState({ distance: distance });
+			if (distance <= restaurant_info.delivery_radius) {
 				this.setState({
 					is_operational: true,
 					is_operational_loading: false,
@@ -198,34 +173,15 @@ class Cart extends Component {
 				});
 			}
 		} else {
-			//if Google Distance Matrix API is enabled
-			let self = this;
-			if (localStorage.getItem("enGDMA") === "true") {
-				distance = calculateDistanceGoogle(
-					restaurant_info.longitude,
-					restaurant_info.latitude,
-					JSON.parse(localStorage.getItem("userSetAddress")).lng,
-					JSON.parse(localStorage.getItem("userSetAddress")).lat,
-					this.props.google,
-					function(distance) {
-						console.log(distance);
-						self.setState({ distance: distance });
-					}
-				);
-			} else {
-				distance = calculateDistance(
-					restaurant_info.longitude,
-					restaurant_info.latitude,
-					JSON.parse(localStorage.getItem("userSetAddress")).lng,
-					JSON.parse(localStorage.getItem("userSetAddress")).lat
-				);
-				this.setState({ distance: distance });
-			}
-
-			console.log("Distance -> ", this.state.distance);
-
+			const distance = calculateDistance(
+				restaurant_info.longitude,
+				restaurant_info.latitude,
+				JSON.parse(localStorage.getItem("userSetAddress")).lng,
+				JSON.parse(localStorage.getItem("userSetAddress")).lat
+			);
+			this.setState({ distance: distance });
 			// console.log(distance);
-			if (this.state.distance <= restaurant_info.delivery_radius) {
+			if (distance <= restaurant_info.delivery_radius) {
 				this.setState({
 					is_operational: true,
 					is_operational_loading: false,
@@ -323,7 +279,7 @@ class Cart extends Component {
 		return (
 			<React.Fragment>
 				<Meta
-					seotitle={localStorage.getItem("cartPageTitle")}
+					seotitle={"Entregas"}
 					seodescription={localStorage.getItem("seoMetaDescription")}
 					ogtype="website"
 					ogtitle={localStorage.getItem("seoOgTitle")}
@@ -338,20 +294,19 @@ class Cart extends Component {
 						<div className="spin-load" />
 					</div>
 				)}
-				{this.state.process_distance_calc_loading && (
-					<div className="height-100 overlay-loading ongoing-payment-spin">
-						<div className="spin-load" />
-					</div>
-				)}
 
 				{this.state.loading ? (
-					<Loading />
+					<div className="height-100 overlay-loading">
+						<div>
+							<img src="/assets/img/loading-food.gif" alt={localStorage.getItem("pleaseWaitText")} />
+						</div>
+					</div>
 				) : (
 					<React.Fragment>
 						<BackWithSearch
 							boxshadow={true}
 							has_title={true}
-							title={localStorage.getItem("cartPageTitle")}
+							title={"Pedidos"}
 							disable_search={true}
 						/>
 						{cartProducts.length ? (
@@ -360,7 +315,7 @@ class Cart extends Component {
 									<RestaurantInfoCart restaurant={restaurant_info} />
 									<div className="block-content block-content-full bg-white pt-10 pb-5">
 										<h2 className="item-text mb-10">
-											{localStorage.getItem("cartItemsInCartText")}
+											Local da entrega
 										</h2>
 										{cartProducts.map((item, index) => (
 											<CartItems
@@ -373,10 +328,11 @@ class Cart extends Component {
 										))}
 									</div>
 									<OrderComment />
+									<OrderComment2 />
 								</div>
 
 								<div>
-									<Coupon subtotal={this.props.cartTotal.totalPrice} />
+									<Coupon />
 									{this.state.alreadyRunningOrders && (
 										<div className="auth-error ongoing-order-notify">
 											<DelayLink to="/my-orders" delay={250} className="ml-2">
@@ -454,10 +410,10 @@ class Cart extends Component {
 								<img
 									className="cart-empty-img"
 									src="/assets/img/cart-empty.png"
-									alt={localStorage.getItem("cartEmptyText")}
+									alt={"Local da coleta"}
 								/>
 								<h2 className="cart-empty-text mt-50 text-center">
-									{localStorage.getItem("cartEmptyText")}
+									Local da Coleta
 								</h2>
 								{this.state.alreadyRunningOrders && (
 									<div
@@ -468,7 +424,7 @@ class Cart extends Component {
 										}}
 									>
 										<DelayLink to="/my-orders" delay={250} className="ml-2">
-											{localStorage.getItem("ongoingOrderMsg")}{" "}
+											Local da Coleta
 											<i className="si si-arrow-right ml-1" style={{ fontSize: "0.7rem" }} />
 											<Ink duration="500" />
 										</DelayLink>
@@ -493,19 +449,14 @@ const mapStateToProps = (state) => ({
 	restaurant: state.restaurant,
 });
 
-export default GoogleApiWrapper({
-	apiKey: localStorage.getItem("googleApiKey"),
-	LoadingContainer: Loading,
-})(
-	connect(
-		mapStateToProps,
-		{
-			checkUserRunningOrder,
-			updateCart,
-			getRestaurantInfoById,
-			updateUserInfo,
-			addProduct,
-			checkCartItemsAvailability,
-		}
-	)(Cart)
-);
+export default connect(
+	mapStateToProps,
+	{
+		checkUserRunningOrder,
+		updateCart,
+		getRestaurantInfoById,
+		updateUserInfo,
+		addProduct,
+		checkCartItemsAvailability,
+	}
+)(Cart);

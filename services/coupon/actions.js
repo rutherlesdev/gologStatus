@@ -2,13 +2,12 @@ import { APPLY_COUPON } from "./actionTypes";
 import { APPLY_COUPON_URL } from "../../configs";
 import Axios from "axios";
 
-export const applyCoupon = (coupon, restaurant_id, subtotal) => (dispatch) => {
+export const applyCoupon = (coupon, restaurant_id) => dispatch => {
 	Axios.post(APPLY_COUPON_URL, {
 		coupon: coupon,
-		restaurant_id: restaurant_id,
-		subtotal: subtotal,
+		restaurant_id: restaurant_id
 	})
-		.then((response) => {
+		.then(response => {
 			const coupon = response.data;
 			return dispatch({ type: APPLY_COUPON, payload: coupon });
 		})
@@ -17,7 +16,7 @@ export const applyCoupon = (coupon, restaurant_id, subtotal) => (dispatch) => {
 		});
 };
 
-export const removeCoupon = () => (dispatch) => {
+export const removeCoupon = () => dispatch => {
 	const coupon = [];
 	return dispatch({ type: APPLY_COUPON, payload: coupon });
 };

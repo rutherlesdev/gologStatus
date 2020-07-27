@@ -22,7 +22,6 @@ import {
 	SEND_PASSWORD_RESET_EMAIL_URL,
 	VERIFY_PASSWORD_RESET_OTP_URL,
 	CHANGE_USER_PASSWORD_URL,
-	CHANGE_USER_AVATAR_URL,
 } from "../../configs";
 
 import Axios from "axios";
@@ -195,20 +194,6 @@ export const changeUserPassword = (email, code, password) => (dispatch) => {
 		.then((response) => {
 			const data = response.data;
 			return dispatch({ type: CHANGE_USER_PASSWORD, payload: data });
-		})
-		.catch(function(error) {
-			console.log(error);
-		});
-};
-
-export const changeAvatar = (token, avatar) => () => {
-	return Axios.post(CHANGE_USER_AVATAR_URL, {
-		token: token,
-		avatar: avatar,
-	})
-		.then((response) => {
-			const data = response.data;
-			return data;
 		})
 		.catch(function(error) {
 			console.log(error);

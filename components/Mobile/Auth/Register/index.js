@@ -8,7 +8,6 @@ import { Redirect } from "react-router";
 import SimpleReactValidator from "simple-react-validator";
 import SocialButton from "../SocialButton";
 import { connect } from "react-redux";
-import Loading from "../../../helpers/loading";
 
 class Register extends Component {
 	constructor() {
@@ -47,15 +46,6 @@ class Register extends Component {
 	};
 
 	componentDidMount() {
-		if (
-			localStorage.getItem("enableFacebookLogin") === "false" &&
-			localStorage.getItem("enableGoogleLogin") === "false"
-		) {
-			if (document.getElementById("socialLoginDiv")) {
-				document.getElementById("socialLoginDiv").classList.add("hidden");
-			}
-		}
-
 		if (
 			localStorage.getItem("enableFacebookLogin") === "true" ||
 			localStorage.getItem("enableGoogleLogin") === "true"
@@ -218,7 +208,7 @@ class Register extends Component {
 			}
 
 			console.log("VALID OTP, REG USER NOW");
-			// this.setState({ loading: false });
+			this.setState({ loading: false });
 		}
 
 		if (newProps.user.valid_otp === false) {
@@ -333,6 +323,8 @@ class Register extends Component {
 		}
 		return (
 			<React.Fragment>
+				{/* PreLoading the loading gif */}
+				<img src="/assets/img/loading-food.gif" className="hidden" alt="prefetching" />
 				{this.state.error && (
 					<div className="auth-error">
 						<div className="error-shake">{localStorage.getItem("loginErrorMessage")}</div>
@@ -348,7 +340,13 @@ class Register extends Component {
 						<div className="error-shake">{localStorage.getItem("invalidOtpMsg")}</div>
 					</div>
 				)}
-				{this.state.loading && <Loading />}
+				{this.state.loading && (
+					<div className="height-100 overlay-loading">
+						<div>
+							<img src="/assets/img/loading-food.gif" alt={localStorage.getItem("pleaseWaitText")} />
+						</div>
+					</div>
+				)}
 				<div style={{ backgroundColor: "#f2f4f9" }}>
 					<div className="input-group">
 						<div className="input-group-prepend">

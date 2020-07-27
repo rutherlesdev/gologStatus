@@ -4,7 +4,7 @@ import { addProduct, removeProduct } from "../../../../services/cart/actions";
 import Collapsible from "react-collapsible";
 import ContentLoader from "react-content-loader";
 import Customization from "../Customization";
-// import Fade from "react-reveal/Fade";
+import Fade from "react-reveal/Fade";
 import Ink from "react-ink";
 import ItemBadge from "./ItemBadge";
 import LazyLoad from "react-lazyload";
@@ -99,7 +99,7 @@ class ItemList extends Component {
 						<input
 							type="text"
 							className="form-control items-search-box"
-							placeholder={"Digite o nome do bairro da entrega"}
+							placeholder={"Escolha o Bairro da entrega"}
 							onChange={this.searchItem}
 						/>
 						<div className="input-group-append">
@@ -193,52 +193,47 @@ class ItemList extends Component {
 												{item.image !== "" && (
 													<LazyLoad>
 														<Link to={restaurant.slug + "/" + item.id}>
-															<React.Fragment>
-																{cartProducts.find((cp) => cp.id === item.id) !==
-																	undefined && (
-																	<React.Fragment>
-																		<div className="position-realtive">
-																			<div
-																				className="quantity-badge-list"
-																				style={{
-																					backgroundColor: localStorage.getItem(
-																						"storeColor"
-																					),
-																				}}
-																			>
-																				<span>
-																					{item.addon_categories.length ? (
-																						<React.Fragment>
-																							<i
-																								className="si si-check"
-																								style={{
-																									lineHeight:
-																										"1.3rem",
-																								}}
-																							/>
-																						</React.Fragment>
-																					) : (
-																						<React.Fragment>
-																							{
-																								cartProducts.find(
-																									(cp) =>
-																										cp.id ===
-																										item.id
-																								).quantity
-																							}
-																						</React.Fragment>
-																					)}
-																				</span>
-																			</div>
-																		</div>
-																	</React.Fragment>
-																)}
-
-																{/* <Fade duration={500}> */}
+															<Fade duration={500}>
 																
-																{/* </Fade> */}
-															</React.Fragment>
+															</Fade>
 														</Link>
+
+														<React.Fragment>
+															{cartProducts.find((cp) => cp.id === item.id) !==
+																undefined && (
+																<Fade duration={150}>
+																	<div
+																		className="quantity-badge-list"
+																		style={{
+																			backgroundColor: localStorage.getItem(
+																				"storeColor"
+																			),
+																		}}
+																	>
+																		<span>
+																			{item.addon_categories.length ? (
+																				<React.Fragment>
+																					<i
+																						className="si si-check"
+																						style={{
+																							lineHeight: "1.3rem",
+																						}}
+																					/>
+																				</React.Fragment>
+																			) : (
+																				<React.Fragment>
+																					{
+																						cartProducts.find(
+																							(cp) => cp.id === item.id
+																						).quantity
+																					}
+																				</React.Fragment>
+																			)}
+																		</span>
+																	</div>
+																</Fade>
+															)}
+														</React.Fragment>
 													</LazyLoad>
 												)}
 												<div
@@ -314,47 +309,43 @@ class ItemList extends Component {
 																</span>
 
 																{item.old_price > 0 &&
-																localStorage.getItem("showPercentageDiscount") ===
-																	"true" ? (
-																	<React.Fragment>
-																		<p
-																			className="price-percentage-discount mb-0"
-																			style={{
-																				color: localStorage.getItem(
-																					"cartColorBg"
-																				),
-																			}}
-																		>
-																			{parseFloat(
-																				((parseFloat(item.old_price) -
-																					parseFloat(item.price)) /
-																					parseFloat(item.old_price)) *
-																					100
-																			).toFixed(0)}
-																			{localStorage.getItem(
-																				"itemPercentageDiscountText"
-																			)}
-																		</p>
-																	</React.Fragment>
-																) : (
-																	<br />
-																)}
+																	localStorage.getItem("showPercentageDiscount") ===
+																		"true" && (
+																		<React.Fragment>
+																			<p
+																				className="price-percentage-discount mb-0"
+																				style={{
+																					color: localStorage.getItem(
+																						"cartColorBg"
+																					),
+																				}}
+																			>
+																				{parseFloat(
+																					((parseFloat(item.old_price) -
+																						parseFloat(item.price)) /
+																						parseFloat(item.old_price)) *
+																						100
+																				).toFixed(0)}
+																				{localStorage.getItem(
+																					"itemPercentageDiscountText"
+																				)}
+																			</p>
+																		</React.Fragment>
+																	)}
 															</React.Fragment>
 														)}
 														{item.addon_categories.length > 0 && (
-															<React.Fragment>
-																<span
-																	className="ml-2 customizable-item-text"
-																	style={{
-																		color: localStorage.getItem("storeColor"),
-																	}}
-																>
-																	{localStorage.getItem("customizableItemText")}
-																</span>
-																<br />
-															</React.Fragment>
+															<span
+																className="ml-2 customizable-item-text"
+																style={{
+																	color: localStorage.getItem("storeColor"),
+																}}
+															>
+																{localStorage.getItem("customizableItemText")}
+															</span>
 														)}
 													</span>
+													<br />
 													<ItemBadge item={item} />
 												</div>
 
@@ -364,65 +355,57 @@ class ItemList extends Component {
 														role="group"
 														aria-label="btnGroupIcons1"
 													>
-														{item.is_active ? (
-															<React.Fragment>
-																{item.addon_categories.length ? (
-																	<button
-																		disabled
-																		type="button"
-																		className="btn btn-add-remove"
-																		style={{
-																			color: localStorage.getItem("cartColor-bg"),
-																		}}
-																	>
-																		<span className="btn-dec">-</span>
-																		<Ink duration="500" />
-																	</button>
-																) : (
-																	<button
-																		type="button"
-																		className="btn btn-add-remove"
-																		style={{
-																			color: localStorage.getItem("cartColor-bg"),
-																		}}
-																		onClick={() => {
-																			item.quantity = 1;
-																			removeProduct(item);
-																			this.forceStateUpdate();
-																		}}
-																	>
-																		<span className="btn-dec">-</span>
-																		<Ink duration="500" />
-																	</button>
-																)}
-
-																{item.addon_categories.length ? (
-																	<Customization
-																		product={item}
-																		addProduct={addProduct}
-																		forceUpdate={this.forceStateUpdate}
-																	/>
-																) : (
-																	<button
-																		type="button"
-																		className="btn btn-add-remove"
-																		style={{
-																			color: localStorage.getItem("cartColor-bg"),
-																		}}
-																		onClick={() => {
-																			addProduct(item);
-																			this.forceStateUpdate();
-																		}}
-																	>
-																		<span className="btn-inc">+</span>
-																		<Ink duration="500" />
-																	</button>
-																)}
-															</React.Fragment>
+														{item.addon_categories.length ? (
+															<button
+																disabled
+																type="button"
+																className="btn btn-add-remove"
+																style={{
+																	color: localStorage.getItem("cartColor-bg"),
+																}}
+															>
+																<span className="btn-dec">-</span>
+																<Ink duration="500" />
+															</button>
 														) : (
-															<div className="text-danger text-item-not-available">
-																{localStorage.getItem("cartItemNotAvailable")}
-															</div>
+															<button
+																type="button"
+																className="btn btn-add-remove"
+																style={{
+																	color: localStorage.getItem("cartColor-bg"),
+																}}
+																onClick={() => {
+																	item.quantity = 1;
+																	removeProduct(item);
+																	this.forceStateUpdate();
+																}}
+															>
+																<span className="btn-dec">-</span>
+																<Ink duration="500" />
+															</button>
+														)}
+
+														{item.addon_categories.length ? (
+															<Customization
+																product={item}
+																addProduct={addProduct}
+																forceUpdate={this.forceStateUpdate}
+															/>
+														) : (
+															<button
+																type="button"
+																className="btn btn-add-remove"
+																style={{
+																	color: localStorage.getItem("cartColor-bg"),
+																}}
+																onClick={() => {
+																	addProduct(item);
+																	this.forceStateUpdate();
+																}}
+															>
+																<span className="btn-inc">+</span>
+																<Ink duration="500" />
+															</button>
 														)}
 													</div>
 												</div>

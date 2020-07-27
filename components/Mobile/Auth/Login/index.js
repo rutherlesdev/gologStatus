@@ -9,7 +9,6 @@ import SimpleReactValidator from "simple-react-validator";
 import SocialButton from "../SocialButton";
 import { connect } from "react-redux";
 import { getSingleLanguageData } from "../../../../services/languages/actions";
-import Loading from "../../../helpers/loading";
 
 class Login extends Component {
 	constructor() {
@@ -206,7 +205,7 @@ class Login extends Component {
 			}
 
 			console.log("VALID OTP, REG USER NOW");
-			// this.setState({ loading: false });
+			this.setState({ loading: false });
 		}
 
 		if (nextProps.user.valid_otp === false) {
@@ -349,6 +348,8 @@ class Login extends Component {
 
 		return (
 			<React.Fragment>
+				{/* PreLoading the loading gif */}
+				<img src="/assets/img/loading-food.gif" className="hidden" alt="prefetching" />
 				{this.state.error && (
 					<div className="auth-error">
 						<div className="error-shake">{localStorage.getItem("loginErrorMessage")}</div>
@@ -370,7 +371,13 @@ class Login extends Component {
 					</div>
 				)}
 
-				{this.state.loading && <Loading />}
+				{this.state.loading && (
+					<div className="height-100 overlay-loading">
+						<div>
+							<img src="/assets/img/loading-food.gif" alt={localStorage.getItem("pleaseWaitText")} />
+						</div>
+					</div>
+				)}
 
 				<div style={{ backgroundColor: "#f2f4f9" }}>
 					<div className="input-group">
@@ -563,7 +570,7 @@ class Login extends Component {
 					</div>
 				</div>
 				{localStorage.getItem("enPassResetEmail") === "true" && (
-					<div className="mt-4 d-flex align-items-center justify-content-center mb-100">
+					<div className="mt-4 d-flex align-items-center justify-content-center">
 						<NavLink
 							to="/login/forgot-password"
 							style={{
@@ -585,7 +592,7 @@ class Login extends Component {
 				)}
 
 				{languages && languages.length > 1 && (
-					<div className="mt-4 d-flex align-items-center justify-content-center mb-100">
+					<div className="mt-4 d-flex align-items-center justify-content-center">
 						<div className="mr-2">{localStorage.getItem("changeLanguageText")}</div>
 						<select
 							onChange={this.handleOnChange}

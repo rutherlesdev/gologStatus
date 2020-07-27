@@ -11,9 +11,27 @@ import NewOrders from "../NewOrders";
 import AcceptedOrders from "../AcceptedOrders";
 import Ink from "react-ink";
 import Account from "../Account";
-
+import Atrasado from "../../Atrasado"
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
+import Button from '@material-ui/core/Button';
+import { makeStyles } from '@material-ui/core/styles';
+import Fab from '@material-ui/core/Fab';
+import AddIcon from '@material-ui/icons/Add';
+import QuestionAnswerSharpIcon from '@material-ui/icons/QuestionAnswerSharp';
+
+
+	
+function suport() {
+	window.location.href = 'https://www.tidio.com/talk/hyhjjarzm2fjnvgubs8orivzdboyzgu3';
+
+
+
+}
+
+
+
+
 
 class Orders extends Component {
 	state = {
@@ -21,6 +39,7 @@ class Orders extends Component {
 	};
 	audio = new Audio("/assets/audio/notification1.mp3");
 
+	
 	componentDidMount() {
 		if (this.props.delivery_user.success) {
 			this.props.getDeliveryOrders(this.props.delivery_user.data.auth_token);
@@ -57,6 +76,7 @@ class Orders extends Component {
 			}
 		}
 	}
+	
 	componentWillUnmount() {
 		clearInterval(this.refreshSetInterval);
 	}
@@ -74,6 +94,9 @@ class Orders extends Component {
 			return null;
 		}
 	};
+
+	 
+
 	render() {
 		if (window.innerWidth > 768) {
 			return <Redirect to="/" />;
@@ -90,27 +113,21 @@ class Orders extends Component {
 					ogurl={window.location.href}
 					twittertitle={localStorage.getItem("seoTwitterTitle")}
 					twitterdescription={localStorage.getItem("seoTwitterDescription")}
+					
 				/>
+				
+				
 				<BackWithSearch
 					logo={true}
 					boxshadow={true}
 					has_title={true}
 					disable_search={true}
 					disable_back_button={true}
-					has_delivery_icon={false}
-				/>
-				<div className="delivery-order-refresh">
-					<button
-						className="btn btn-get-direction mr-15"
-						onClick={this.__refreshOrders}
-						style={{ position: "relative" }}
-					>
-						{localStorage.getItem("deliveryOrdersRefreshBtn")}{" "}
-						<i ref="btnSpinner" className="fa fa-refresh" />
-						<Ink duration={1200} />
-					</button>
-				</div>
-
+					has_delivery_icon={false}/>
+					
+				
+				
+				
 				<Tabs>
 					<div
 						className="content font-size-xs clearfix footer-fixed"
@@ -137,12 +154,38 @@ class Orders extends Component {
 									{localStorage.getItem("deliveryFooterAccount")}
 									<Ink duration="500" hasTouch="true" />
 								</div>
+								
 							</Tab>
+
+						
+
+							
 						</TabList>
 					</div>
+					<div className="delivery-order-refresh">
+					
+					<button
+						className="btn btn-get-direction mr-15"
+						onClick={this.__refreshOrders}
+						style={{ position: "relative" }}
+					>
+
+						
+						{localStorage.getItem("deliveryOrdersRefreshBtn")}{" "}
+						<i ref="btnSpinner" className="fa fa-refresh" />
+						<Ink duration={1200} />
+						
+					</button>
+
+
+				
+				</div>
 					<TabPanel>
+					
+
 						{!this.props.delivery_orders.new_orders ? (
 							<div className="pt-50">
+								
 								<ContentLoader
 									height={window.innerHeight}
 									width={window.innerWidth}
@@ -150,6 +193,7 @@ class Orders extends Component {
 									primaryColor="#fafafa"
 									secondaryColor="#eee"
 								>
+									
 									<rect x="15" y="30" rx="0" ry="0" width="150" height="30" />
 									<rect x="283" y="30" rx="0" ry="0" width="75" height="30" />
 									<rect x="15" y="70" rx="0" ry="0" width="250" height="23" />
@@ -161,14 +205,23 @@ class Orders extends Component {
 									<rect x="15" y="316" rx="0" ry="0" width="150" height="30" />
 									<rect x="283" y="316" rx="0" ry="0" width="75" height="30" />
 									<rect x="15" y="356" rx="0" ry="0" width="250" height="23" />
+
 								</ContentLoader>
+								
 							</div>
+							
 						) : (
-							<NewOrders
-								getLocationName={this.getLocationName}
-								new_orders={this.props.delivery_orders.new_orders}
-							/>
-						)}
+							
+							<Atrasado></Atrasado>
+
+							
+						)
+						
+						
+						}
+
+
+						
 					</TabPanel>
 					<TabPanel>
 						{!this.props.delivery_orders.accepted_orders ? (
@@ -206,7 +259,17 @@ class Orders extends Component {
 							logoutDeliveryUser={this.props.logoutDeliveryUser}
 						/>
 					</TabPanel>
+
+
+				
+
+
+
 				</Tabs>
+
+				<Fab  onClick={suport} style={{backgroundColor:"#72e831",marginLeft:30}}  size="medium" styl aria-label="add" >
+          <QuestionAnswerSharpIcon/>
+        </Fab>
 			</React.Fragment>
 		);
 	}

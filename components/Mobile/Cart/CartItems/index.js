@@ -59,9 +59,7 @@ class CartItems extends Component {
 							</React.Fragment>
 						)}
 
-						<span className={`${!item.is_active && "text-danger"}`}>
-							<strong> {item.name}</strong>
-						</span>
+						<span className={`${!item.is_active && "text-danger"}`}>{item.name}</span>
 
 						{item.selectedaddons && (
 							<React.Fragment>
@@ -87,21 +85,7 @@ class CartItems extends Component {
 									}}
 									onClick={() => removeProductQuantity(item)}
 								>
-									<span className="btn-dec">
-										{item.quantity === 1 ? (
-											<i
-												className="si si-trash"
-												style={{
-													fontSize: "0.8rem",
-													top: "-0.2rem",
-													WebkitTextStroke: "0.4px #f44336",
-													color: "#f44336",
-												}}
-											/>
-										) : (
-											"-"
-										)}
-									</span>
+									<span className="btn-dec">-</span>
 									<Ink duration="500" />
 								</button>
 								<button type="button" className="btn btn-quantity">

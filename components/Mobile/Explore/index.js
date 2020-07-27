@@ -16,10 +16,10 @@ class Explore extends Component {
 		queryLengthError: false,
 		loading: false,
 		showBgImage: true,
-		nothingFound: false,
+		nothingFound: false
 	};
 
-	handleRestaurantSearch = debounce((query) => {
+	handleRestaurantSearch = debounce(query => {
 		// call to searchRestaurants search API
 		if (query.length >= 3) {
 			this.props.searchRestaurants(
@@ -30,7 +30,7 @@ class Explore extends Component {
 			this.setState({
 				queryLengthError: false,
 				loading: true,
-				nothingFound: false,
+				nothingFound: false
 			});
 		} else {
 			this.setState({ queryLengthError: true });
@@ -141,11 +141,8 @@ class Explore extends Component {
 	}
 }
 
-const mapStateToProps = (state) => ({
-	restaurants: state.restaurants.restaurants,
+const mapStateToProps = state => ({
+	restaurants: state.restaurants.restaurants
 });
 
-export default connect(
-	mapStateToProps,
-	{ searchRestaurants, clearSearch }
-)(Explore);
+export default connect(mapStateToProps, { searchRestaurants, clearSearch })(Explore);

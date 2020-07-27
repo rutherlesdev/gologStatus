@@ -3,6 +3,18 @@ import Modal from "react-responsive-modal";
 import Ink from "react-ink";
 import { formatPrice } from "../../../../../helpers/formatPrice";
 class OrderCancelPopup extends Component {
+
+
+
+
+
+
+
+
+
+
+
+	
 	state = {
 		open: false
 	};
@@ -13,6 +25,20 @@ class OrderCancelPopup extends Component {
 		this.setState({ open: false });
 	};
 	render() {
+
+
+
+		let elemento = document.querySelector('#contador');
+		let contador = 0;
+		
+		var teste = setInterval(() =>  contador++, 1000);
+        console.log(teste)
+
+
+
+
+
+
 		const { order, user, cancelOrder } = this.props;
 
 		return (
@@ -34,7 +60,7 @@ class OrderCancelPopup extends Component {
 							></i>
 							<p>{order.unique_order_id}</p>
 							<p>{localStorage.getItem("orderCancellationConfirmationText")}</p>
-							{order.orderstatus_id === 1 ? (
+							{order.orderstatus_id === 2 ? (
 								<React.Fragment>
 									{order.payment_mode !== "COD" && (
 										<p className="text-muted font-w400">

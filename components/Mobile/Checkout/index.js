@@ -13,9 +13,6 @@ import { placeOrder } from "../../../services/checkout/actions";
 // import DelayLink from "../../helpers/delayLink";
 
 class Checkout extends Component {
-	state = {
-		process_distance_calc_loading: false,
-	};
 	componentDidMount() {
 		if (this.props.cartProducts.length) {
 			document.getElementsByTagName("body")[0].classList.add("bg-grey-light");
@@ -32,10 +29,6 @@ class Checkout extends Component {
 	componentWillUnmount() {
 		document.getElementsByTagName("body")[0].classList.remove("bg-grey-light");
 	}
-
-	handleProcessDistanceCalcLoading = (value) => {
-		this.setState({ process_distance_calc_loading: value });
-	};
 
 	render() {
 		if (!this.props.cartProducts.length) {
@@ -56,11 +49,6 @@ class Checkout extends Component {
 		}
 		return (
 			<React.Fragment>
-				{this.state.process_distance_calc_loading && (
-					<div className="height-100 overlay-loading ongoing-payment-spin">
-						<div className="spin-load" />
-					</div>
-				)}
 				<Meta
 					seotitle={localStorage.getItem("checkoutPageTitle")}
 					seodescription={localStorage.getItem("seoMetaDescription")}
@@ -78,23 +66,20 @@ class Checkout extends Component {
 					disable_search={true}
 				/>
 				<div className="pt-50">
-					<div className="pt-30" />
-					<PaymentList handleProcessDistanceCalcLoading={this.handleProcessDistanceCalcLoading} />
+					<div className="pt-30"></div>
+					<PaymentList />
 				</div>
 			</React.Fragment>
 		);
 	}
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
 	total: state.total.total,
 	user: state.user.user,
 	cartProducts: state.cart.products,
 	cartTotal: state.total.data,
 	coupon: state.coupon.coupon,
-	confirmCart: state.confirmCart.confirmCart,
+	confirmCart: state.confirmCart.confirmCart
 });
-export default connect(
-	mapStateToProps,
-	{ checkConfirmCart, placeOrder }
-)(Checkout);
+export default connect(mapStateToProps, { checkConfirmCart, placeOrder })(Checkout);

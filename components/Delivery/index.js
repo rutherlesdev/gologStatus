@@ -4,6 +4,9 @@ import React, { Component } from "react";
 
 import Meta from "../helpers/meta";
 import Orders from "./Orders";
+import Atrasado from "./Orders/atrasado";
+import Suspenso from "./Orders/suspenso";
+import Bloqueado from "./Orders/bloqueado";
 
 import { Redirect } from "react-router";
 import { connect } from "react-redux";
@@ -50,23 +53,134 @@ class Delivery extends Component {
 		if (!delivery_user.success) {
 			return <Redirect to={"/delivery/login"} />;
 		}
-		return (
-			<React.Fragment>
-				<Meta
-					seotitle="Delivery Orders"
-					seodescription={localStorage.getItem("seoMetaDescription")}
-					ogtype="website"
-					ogtitle={localStorage.getItem("seoOgTitle")}
-					ogdescription={localStorage.getItem("seoOgDescription")}
-					ogurl={window.location.href}
-					twittertitle={localStorage.getItem("seoTwitterTitle")}
-					twitterdescription={localStorage.getItem("seoTwitterDescription")}
-				/>
 
-				<Orders />
-				<ShareLiveLocation />
-			</React.Fragment>
-		);
+
+
+var carteira = setInterval(verificaValor, 3000);
+var bloqueio = setInterval(verificaNome, 3000);
+var suspenso = setInterval(verificaTipo, 3000);
+
+
+console.log(carteira)
+
+function verificaValor() {
+  if (delivery_user.data.wallet_balance > 30) {
+	  return console.log("teste")
+	  
+	  
+  }
+}
+
+function verificaNome() {
+	if (delivery_user.data.name.includes("bloqueado")) {
+		return "bloqueado"
+		
+		
+	}
+  }
+
+  function verificaTipo() {
+	if (delivery_user.data.name.includes("suspenso")) {
+		return "suspenso"
+		
+		
+	}
+  }
+
+  console.log(carteira)
+		
+if (carteira === "boleto" ) {
+	
+	return (
+		<React.Fragment>
+			<Meta
+				seotitle="Delivery Orders"
+				seodescription={localStorage.getItem("seoMetaDescription")}
+				ogtype="website"
+				ogtitle={localStorage.getItem("seoOgTitle")}
+				ogdescription={localStorage.getItem("seoOgDescription")}
+				ogurl={window.location.href}
+				twittertitle={localStorage.getItem("seoTwitterTitle")}
+				twitterdescription={localStorage.getItem("seoTwitterDescription")}
+			/>
+
+			<Atrasado />
+			<ShareLiveLocation />
+		</React.Fragment>
+	);
+	
+}
+
+
+if (bloqueio === "bloqueado") {
+
+	return (
+		<React.Fragment>
+			<Meta
+				seotitle="Delivery Orders"
+				seodescription={localStorage.getItem("seoMetaDescription")}
+				ogtype="website"
+				ogtitle={localStorage.getItem("seoOgTitle")}
+				ogdescription={localStorage.getItem("seoOgDescription")}
+				ogurl={window.location.href}
+				twittertitle={localStorage.getItem("seoTwitterTitle")}
+				twitterdescription={localStorage.getItem("seoTwitterDescription")}
+			/>
+
+			<Bloqueado />
+			<ShareLiveLocation />
+		</React.Fragment>
+	);
+	
+}
+
+	 
+if (suspenso === "suspenso") {
+
+	return (
+		<React.Fragment>
+			<Meta
+				seotitle="Delivery Orders"
+				seodescription={localStorage.getItem("seoMetaDescription")}
+				ogtype="website"
+				ogtitle={localStorage.getItem("seoOgTitle")}
+				ogdescription={localStorage.getItem("seoOgDescription")}
+				ogurl={window.location.href}
+				twittertitle={localStorage.getItem("seoTwitterTitle")}
+				twitterdescription={localStorage.getItem("seoTwitterDescription")}
+			/>
+
+			<Suspenso />
+			<ShareLiveLocation />
+		</React.Fragment>
+	);
+	
+}
+
+
+return (
+	<React.Fragment>
+		<Meta
+			seotitle="Delivery Orders"
+			seodescription={localStorage.getItem("seoMetaDescription")}
+			ogtype="website"
+			ogtitle={localStorage.getItem("seoOgTitle")}
+			ogdescription={localStorage.getItem("seoOgDescription")}
+			ogurl={window.location.href}
+			twittertitle={localStorage.getItem("seoTwitterTitle")}
+			twitterdescription={localStorage.getItem("seoTwitterDescription")}
+		/>
+
+		<Orders />
+		<ShareLiveLocation />
+	</React.Fragment>
+);
+
+
+
+
+
+	
 	}
 }
 

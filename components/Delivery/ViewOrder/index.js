@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { acceptToDeliverOrder, deliverOrder, pickupOrder } from "../../../services/Delivery/deliveryprogress/actions";
 
+import Button from '@material-ui/core/Button';
+
 import BackWithSearch from "../../Mobile/Elements/BackWithSearch";
 import ContentLoader from "react-content-loader";
 
@@ -124,631 +126,1163 @@ class ViewOrder extends Component {
 		}
 		const order = this.props.single_delivery_order;
 
-		
-	 if (order.total < 15 ) {
+		console.log(order)
 
-		
-		{/* inicio do return golog*/}
 
-		return (
-			<React.Fragment>
-				<Meta
-					seotitle="Delivery Orders"
-					seodescription={localStorage.getItem("seoMetaDescription")}
-					ogtype="website"
-					ogtitle={localStorage.getItem("seoOgTitle")}
-					ogdescription={localStorage.getItem("seoOgDescription")}
-					ogurl={window.location.href}
-					twittertitle={localStorage.getItem("seoTwitterTitle")}
-					twitterdescription={localStorage.getItem("seoTwitterDescription")}
-				/>
-				<BackWithSearch
-					boxshadow={true}
-					has_title={true}
-					title={
-						order.unique_order_id && "#" + order.unique_order_id.substr(order.unique_order_id.length - 8)
-					}
-					disable_search={true}
-				/>
+		//conditional golog
 
-				{!order.id ? (
-					<div className="pt-50">
-						<ContentLoader
-							height={150}
-							width={400}
-							speed={1.2}
-							primaryColor="#f3f3f3"
-							secondaryColor="#ecebeb"
-						>
-							<rect x="20" y="70" rx="4" ry="4" width="80" height="78" />
-							<rect x="144" y="85" rx="0" ry="0" width="115" height="18" />
-							<rect x="144" y="115" rx="0" ry="0" width="165" height="16" />
-						</ContentLoader>
-					</div>
-				) : (
-						<React.Fragment>
-							{this.state.loading && (
-								<div className="height-100 overlay-loading ongoing-payment-spin">
-									<div className="spin-load" />
-								</div>
-							)}
-							{!this.state.delivered && (
-								<React.Fragment>
-									{this.state.max_order && (
-										<div className="auth-error">
-											<div className="error-shake">
-												{localStorage.getItem("deliveryMaxOrderReachedMsg")}
+		if (order.total < 10 && order.restaurant_charge !== 3) {
+
+			function chatEmpresa (){
+				window.location.href = "http://api.whatsapp.com/send?1=pt_BR&phone=55" + order.user.phone
+
+			}
+
+			return (
+				<React.Fragment>
+					<Meta
+						seotitle="Delivery Orders"
+						seodescription={localStorage.getItem("seoMetaDescription")}
+						ogtype="website"
+						ogtitle={localStorage.getItem("seoOgTitle")}
+						ogdescription={localStorage.getItem("seoOgDescription")}
+						ogurl={window.location.href}
+						twittertitle={localStorage.getItem("seoTwitterTitle")}
+						twitterdescription={localStorage.getItem("seoTwitterDescription")}
+					/>
+					<BackWithSearch
+						boxshadow={true}
+						has_title={true}
+						title={
+							order.unique_order_id && "#" + order.unique_order_id.substr(order.unique_order_id.length - 8)
+						}
+						disable_search={true}
+					/>
+
+					{!order.id ? (
+						<div className="pt-50">
+							<ContentLoader
+								height={150}
+								width={400}
+								speed={1.2}
+								primaryColor="#f3f3f3"
+								secondaryColor="#ecebeb"
+							>
+								<rect x="20" y="70" rx="4" ry="4" width="80" height="78" />
+								<rect x="144" y="85" rx="0" ry="0" width="115" height="18" />
+								<rect x="144" y="115" rx="0" ry="0" width="165" height="16" />
+							</ContentLoader>
+						</div>
+					) : (
+							<React.Fragment>
+								{this.state.loading && (
+									<div className="height-100 overlay-loading ongoing-payment-spin">
+										<div className="spin-load" />
+									</div>
+								)}
+								{!this.state.delivered && (
+									<React.Fragment>
+										{this.state.max_order && (
+											<div className="auth-error">
+												<div className="error-shake">
+													{localStorage.getItem("deliveryMaxOrderReachedMsg")}
+												</div>
 											</div>
-										</div>
-									)}
-									{this.state.already_accepted ? (
-										<div className="auth-error">
-											<div className="error-shake">
-												{localStorage.getItem("deliveryAlreadyAccepted")}
+										)}
+										{this.state.already_accepted ? (
+											<div className="auth-error">
+												<div className="error-shake">
+													{localStorage.getItem("deliveryAlreadyAccepted")}
+												</div>
 											</div>
-										</div>
-									) : (
-											<React.Fragment>
-												{this.state.delivery_pin_error && (
-													<div className="auth-error" style={{ zIndex: "9", marginBottom: "4rem" }}>
-														<div className="error-shake">
-															{localStorage.getItem("deliveryInvalidDeliveryPin")}
+										) : (
+												<React.Fragment>
+													{this.state.delivery_pin_error && (
+														<div className="auth-error" style={{ zIndex: "9", marginBottom: "4rem" }}>
+															<div className="error-shake">
+																{localStorage.getItem("deliveryInvalidDeliveryPin")}
+															</div>
 														</div>
-													</div>
-												)}
+													)}
 
-												<button className="btn btn-clock text-center">
-													<i className="si si-clock mr-5" />{" "}
-													{localStorage.getItem("deliveryOrderPlacedText")}:{" "}
-													<Moment fromNow interval={5000}>
-														{order.updated_at}
-													</Moment>
-												</button>
+													<button className="btn btn-clock text-center">
+														<i className="si si-clock mr-5" />{" "}
+														{localStorage.getItem("deliveryOrderPlacedText")}:{" "}
+														<Moment fromNow interval={5000}>
+															{order.updated_at}
+														</Moment>
+													</button>
+													{/* <h1>ORDER STATUS: {order.orderstatus_id}</h1> */}
+													<div className="view-delivery-order" style={{ paddingBottom: "20rem" }}>
+														<RestaurantInfo order={order} />
+														<div className="clearfix" />
+														<hr />
 
-
-
-
-												{/* Inicio do goLog */}
-
-
-
-
-												<div className="view-delivery-order" style={{ paddingBottom: "20rem" }}>
-													<RestaurantInfo order={order} />
-													<div className="clearfix" />
-													<hr />
-													<div className="pt-15 px-15">
-														<h3>
-															<span className="delivery-orderItems-basket">
-
-																{/*Detalhes da Entrega*/}
-
-															</span>
-													Detalhes da entrega
-												</h3>
-														{order.order_comment}
-														{/*{order.orderitems.map((item) => (
-													<OrderItems item={item} key={item.id} />
-												))}*/}
-
-													</div>
-													<hr />
-													{!this.state.picked_up && (
-														<React.Fragment>
+														<hr />
 
 
-															{localStorage.getItem("showUserInfoBeforePickup") === "true" && (
+														{!this.state.picked_up && (
+															<React.Fragment>
+
+
+
+																{localStorage.getItem("showUserInfoBeforePickup") === "true" && (
+																	<div className="pt-15 px-15">
+																		<div className="customer-address">
+																			<h4 className="text-muted">
+																				Endereço da coleta
+																			</h4>
+
+																			<h5>Pegar em:</h5>
+
+
+																			<p className="mb-0">
+																				Empresa: {order.user.name}
+																			</p>
+
+																			<p className="mb-2">{order.address}</p>
+																			<p className="mb-0">Contato: {order.user.phone}</p>
+																			<p></p>
+
+
+																			<div className="pull-right mr-2">
+
+																				<a
+																					style={{ backgroundColor: "#28a745", borderRadius: 7 }}
+																					className="btn btn-get-direction"
+																					onClick={chatEmpresa}
+																					 style={{ color: "#ffff" }} >Chat Empresa</a>
+
+																				<a
+																					style={{ backgroundColor: "#e84c3d", borderRadius: 7 }}
+																					className="btn btn-get-direction"
+																					onClick={() =>
+																						this.__getDirectionToUser(order.location)
+																					}><h6 style={{ color: "#ffff" }} >Veja no Mapa</h6></a></div>
+																			<div className="clearfix" />
+																		</div></div>)}
+
+
+
+																<div className="pt-15 px-15">
+																	<div className="address restaurant-address">
+																		<h4 className="text-muted">
+																			Entregas
+																		</h4>
+																		<div className="pt-15 px-15">
+																			<h3>
+																				<span className="delivery-orderItems-basket">
+
+
+																				</span>
+																🚩 Destino da entrega
+															</h3>
+																			{order.orderitems.map((item) => (
+																				<OrderItems item={item} key={item.id} />
+																			))}
+																			<h4>Detalhes : {order.order_comment}</h4>
+																		</div>
+																		<div
+																			className="pull-right"
+																			onClick={() =>
+																				this.__getDirectionToRestaurant(
+																					order.restaurant.latitude,
+																					order.restaurant.longitude
+																				)
+																			}
+
+																		>
+
+																		</div>
+																		<div className="clearfix" />
+																	</div>
+																</div>
+
+															</React.Fragment>
+														)}
+
+														{this.state.picked_up && (
+															<React.Fragment>
 																<div className="pt-15 px-15">
 																	<div className="customer-address">
 																		<h4 className="text-muted">
-																			Endereço de Coleta
+																			Dados da Empresa
 																		</h4>
-																		<p style={{ color: 'green' }} className="font-weight-bold mb-0">
-																			<i style={{ color: '#000' }}>	Pegar em: </i>{order.user.name}
-																		</p>
+																		<p className="font-weight-bold mb-0">{order.user.name}</p>
 																		<p className="mb-0">{order.user.phone}</p>
 																		<p className="mb-2">{order.address}</p>
 																		<div className="pull-right">
-																			<button style={{ backgroundColor: 'red', color: '#fff', borderRadius: 7 }}
+
+																		</div>
+																		<div className="pull-right mr-2">
+																			
+																		</div>
+
+																		<div className="clearfix" />
+																	</div>
+																</div>
+
+																{localStorage.getItem("enableDeliveryPin") === "true" && (
+																	<div className="pt-10 px-15 delivery-pin-block">
+																		<div className="form-group">
+																			<div className="row">
+																				<div className="col-12">
+																					<input
+																						type="text"
+																						className="form-control"
+																						placeholder={localStorage.getItem(
+																							"deliveryDeliveryPinPlaceholder"
+																						)}
+																						onChange={this.__handleDeliveryPinInput}
+																					/>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																)}
+															</React.Fragment>
+														)}
+														<div className="delivery-action">
+															{!this.state.accepted_order &&
+																!this.state.picked_up &&
+																!this.state.delivered && (
+																	<button
+																		onClick={this.__acceptToDeliver}
+																		type="button"
+																		className="btn btn-accept"
+																		style={{
+																			backgroundColor: localStorage.getItem("storeColor"),
+																		}}
+																	>
+																		<i className="si si-check mr-5" />
+																		{localStorage.getItem("deliveryAcceptOrderButton")}
+																	</button>
+																)}
+															{this.state.accepted_order &&
+																!this.state.picked_up &&
+																!this.state.delivered && (
+																	<button
+																		onClick={this.__pickedUp}
+																		type="button"
+																		className="btn btn-accept"
+																		style={{
+																			backgroundColor: "#ffc107",
+																		}}
+																	>
+																		<i className="si si-bag mr-5" />
+																		{localStorage.getItem("deliveryPickedUpButton")}
+																	</button>
+																)}
+															{this.state.accepted_order &&
+																this.state.picked_up &&
+																!this.state.delivered && (
+																	<button
+																		onClick={this.__delivered}
+																		type="button"
+																		className="btn btn-accept"
+																		style={{
+																			backgroundColor: "red",
+																		}}
+																	>
+																		<i className="si si-check mr-5" />
+																		{localStorage.getItem("deliveryDeliveredButton")}
+																	</button>
+																)}
+															{this.state.accepted_order &&
+																this.state.picked_up &&
+																this.state.delivered && (
+																	<button
+																		type="button"
+																		className="btn btn-accept"
+																		style={{
+																			backgroundColor: localStorage.getItem("storeColor"),
+																		}}
+																	>
+																		<i className="si si-check mr-5" />
+																		{localStorage.getItem("deliveryOrderCompletedButton")}
+																	</button>
+																)}
+														</div>
+													</div>
+												</React.Fragment>
+											)}
+									</React.Fragment>
+								)}
+							</React.Fragment>
+						)}
+					<ShareLiveLocation />
+				</React.Fragment>
+			);
+
+			/// conditional gocompras
+		} else if (order.restaurant_charge == 3) {
+
+
+			return (
+				<React.Fragment>
+					<Meta
+						seotitle="Delivery Orders"
+						seodescription={localStorage.getItem("seoMetaDescription")}
+						ogtype="website"
+						ogtitle={localStorage.getItem("seoOgTitle")}
+						ogdescription={localStorage.getItem("seoOgDescription")}
+						ogurl={window.location.href}
+						twittertitle={localStorage.getItem("seoTwitterTitle")}
+						twitterdescription={localStorage.getItem("seoTwitterDescription")}
+					/>
+					<BackWithSearch
+						boxshadow={true}
+						has_title={true}
+						title={
+							order.unique_order_id && "#" + order.unique_order_id.substr(order.unique_order_id.length - 8)
+						}
+						disable_search={true}
+					/>
+
+					{!order.id ? (
+						<div className="pt-50">
+							<ContentLoader
+								height={150}
+								width={400}
+								speed={1.2}
+								primaryColor="#f3f3f3"
+								secondaryColor="#ecebeb"
+							>
+								<rect x="20" y="70" rx="4" ry="4" width="80" height="78" />
+								<rect x="144" y="85" rx="0" ry="0" width="115" height="18" />
+								<rect x="144" y="115" rx="0" ry="0" width="165" height="16" />
+							</ContentLoader>
+						</div>
+					) : (
+							<React.Fragment>
+								{this.state.loading && (
+									<div className="height-100 overlay-loading ongoing-payment-spin">
+										<div className="spin-load" />
+									</div>
+								)}
+								{!this.state.delivered && (
+									<React.Fragment>
+										{this.state.max_order && (
+											<div className="auth-error">
+												<div className="error-shake">
+													{localStorage.getItem("deliveryMaxOrderReachedMsg")}
+												</div>
+											</div>
+										)}
+										{this.state.already_accepted ? (
+											<div className="auth-error">
+												<div className="error-shake">
+													{localStorage.getItem("deliveryAlreadyAccepted")}
+												</div>
+											</div>
+										) : (
+												<React.Fragment>
+													{this.state.delivery_pin_error && (
+														<div className="auth-error" style={{ zIndex: "9", marginBottom: "4rem" }}>
+															<div className="error-shake">
+																{localStorage.getItem("deliveryInvalidDeliveryPin")}
+															</div>
+														</div>
+													)}
+
+													<button className="btn btn-clock text-center">
+														<i className="si si-clock mr-5" />{" "}
+														{localStorage.getItem("deliveryOrderPlacedText")}:{" "}
+														<Moment fromNow interval={5000}>
+															{order.updated_at}
+														</Moment>
+													</button>
+													{/* <h1>ORDER STATUS: {order.orderstatus_id}</h1> */}
+													<div className="view-delivery-order" style={{ paddingBottom: "20rem" }}>
+														<RestaurantInfo order={order} />
+														<div className="clearfix" />
+														<hr />
+
+														<hr />
+
+
+														{!this.state.picked_up && (
+															<React.Fragment>
+
+
+																<div className="pt-15 px-15">
+																	<div className="address restaurant-address">
+																		<h4 className="text-muted">
+																			Entregas
+																		</h4>
+																		<div className="pt-15 px-15">
+																			<h3>
+																				<span className="delivery-orderItems-basket">
+
+
+																				</span>
+																				🛍 Detalhes das compras
+															</h3>
+																			{order.orderitems.map((item) => (
+																				<OrderItems item={item} key={item.id} />
+																			))}
+																		</div>
+
+																		<h5> Compras : {order.order_comment}</h5>
+
+
+
+																		<div className="clearfix" />
+																	</div>
+																</div>
+
+
+																{localStorage.getItem("showUserInfoBeforePickup") === "true" && (
+																	<div className="pt-15 px-15">
+																		<div className="customer-address">
+																			<h4 className="text-muted">
+																				Endereço da entrega das compras
+																			</h4>
+
+																			<h5>Deixar em:</h5>
+
+
+																			<p className="mb-0">
+																				Cliente: {order.user.name}
+																			</p>
+
+																			<p className="mb-2">{order.address}</p>
+																			<p className="mb-0">Contato: {order.user.phone}</p>
+																			<p></p>
+																			<div className="pull-right">
+
+
+
+
+
+
+																			</div>
+
+																			<div className="clearfix" />
+																		</div>
+																	</div>
+																)}
+
+															</React.Fragment>
+														)}
+
+														{this.state.picked_up && (
+															<React.Fragment>
+																<div className="pt-15 px-15">
+																	<div className="customer-address">
+																		<h4 className="text-muted">
+																			Dados do cliente
+																		</h4>
+																		<p className="font-weight-bold mb-0">{order.user.name}</p>
+																		<p className="mb-0">{order.user.phone}</p>
+																		<p className="mb-2">{order.address}</p>
+																		<div className="pull-right mr-2">
+
+																			<a
+																				style={{ backgroundColor: "#28a745", borderRadius: 7 }}
+																				className="btn btn-get-direction"
+																				href={"http://api.whatsapp.com/send?1=pt_BR&phone=55" + order.user.phone}>
+																				<h6 style={{ color: "#ffff" }} >Chat Empresa</h6></a>
+
+																			<a
+																				style={{ backgroundColor: "#e84c3d", borderRadius: 7 }}
+																				className="btn btn-get-direction"
+																				onClick={() =>
+																					this.__getDirectionToUser(order.location)
+																				}><h6 style={{ color: "#ffff" }} >Veja no Mapa</h6></a></div>
+																		<div className="clearfix" />
+																	</div></div>)}
+
+
+																{localStorage.getItem("enableDeliveryPin") === "true" && (
+																	<div className="pt-10 px-15 delivery-pin-block">
+																		<div className="form-group">
+																			<div className="row">
+																				<div className="col-12">
+																					<input
+																						type="text"
+																						className="form-control"
+																						placeholder={localStorage.getItem(
+																							"deliveryDeliveryPinPlaceholder"
+																						)}
+																						onChange={this.__handleDeliveryPinInput}
+																					/>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																)}
+															</React.Fragment>
+														)}
+														<div className="delivery-action">
+															{!this.state.accepted_order &&
+																!this.state.picked_up &&
+																!this.state.delivered && (
+																	<button
+																		onClick={this.__acceptToDeliver}
+																		type="button"
+																		className="btn btn-accept"
+																		style={{
+																			backgroundColor: localStorage.getItem("storeColor"),
+																		}}
+																	>
+																		<i className="si si-check mr-5" />
+																		{localStorage.getItem("deliveryAcceptOrderButton")}
+																	</button>
+																)}
+															{this.state.accepted_order &&
+																!this.state.picked_up &&
+																!this.state.delivered && (
+																	<button
+																		onClick={this.__pickedUp}
+																		type="button"
+																		className="btn btn-accept"
+																		style={{
+																			backgroundColor: localStorage.getItem("storeColor"),
+																		}}
+																	>
+																		<i className="si si-bag mr-5" />
+																		{localStorage.getItem("deliveryPickedUpButton")}
+																	</button>
+																)}
+															{this.state.accepted_order &&
+																this.state.picked_up &&
+																!this.state.delivered && (
+																	<button
+																		onClick={this.__delivered}
+																		type="button"
+																		className="btn btn-accept"
+																		style={{
+																			backgroundColor: "#ffc107",
+																		}}
+																	>
+																		<i className="si si-check mr-5" />
+																		{localStorage.getItem("deliveryDeliveredButton")}
+																	</button>
+																)}
+															{this.state.accepted_order &&
+																this.state.picked_up &&
+																this.state.delivered && (
+																	<button
+																		type="button"
+																		className="btn btn-accept"
+																		style={{
+																			backgroundColor: "red",
+																		}}
+																	>
+																		<i className="si si-check mr-5" />
+																		{localStorage.getItem("deliveryOrderCompletedButton")}
+																	</button>
+																)}
+														</div>
+													</div>
+												</React.Fragment>
+											)}
+									</React.Fragment>
+								)}
+							</React.Fragment>
+						)}
+					<ShareLiveLocation />
+				</React.Fragment>
+			);
+
+
+
+			//conditional marktplace
+		} else {
+
+
+			return (
+				<React.Fragment>
+					<Meta
+						seotitle="Delivery Orders"
+						seodescription={localStorage.getItem("seoMetaDescription")}
+						ogtype="website"
+						ogtitle={localStorage.getItem("seoOgTitle")}
+						ogdescription={localStorage.getItem("seoOgDescription")}
+						ogurl={window.location.href}
+						twittertitle={localStorage.getItem("seoTwitterTitle")}
+						twitterdescription={localStorage.getItem("seoTwitterDescription")}
+					/>
+					<BackWithSearch
+						boxshadow={true}
+						has_title={true}
+						title={
+							order.unique_order_id && "#" + order.unique_order_id.substr(order.unique_order_id.length - 8)
+						}
+						disable_search={true}
+					/>
+
+					{!order.id ? (
+						<div className="pt-50">
+							<ContentLoader
+								height={150}
+								width={400}
+								speed={1.2}
+								primaryColor="#f3f3f3"
+								secondaryColor="#ecebeb"
+							>
+								<rect x="20" y="70" rx="4" ry="4" width="80" height="78" />
+								<rect x="144" y="85" rx="0" ry="0" width="115" height="18" />
+								<rect x="144" y="115" rx="0" ry="0" width="165" height="16" />
+							</ContentLoader>
+						</div>
+					) : (
+							<React.Fragment>
+								{this.state.loading && (
+									<div className="height-100 overlay-loading ongoing-payment-spin">
+										<div className="spin-load" />
+									</div>
+								)}
+								{!this.state.delivered && (
+									<React.Fragment>
+										{this.state.max_order && (
+											<div className="auth-error">
+												<div className="error-shake">
+													{localStorage.getItem("deliveryMaxOrderReachedMsg")}
+												</div>
+											</div>
+										)}
+										{this.state.already_accepted ? (
+											<div className="auth-error">
+												<div className="error-shake">
+													{localStorage.getItem("deliveryAlreadyAccepted")}
+												</div>
+											</div>
+										) : (
+												<React.Fragment>
+													{this.state.delivery_pin_error && (
+														<div className="auth-error" style={{ zIndex: "9", marginBottom: "4rem" }}>
+															<div className="error-shake">
+																{localStorage.getItem("deliveryInvalidDeliveryPin")}
+															</div>
+														</div>
+													)}
+
+													<button className="btn btn-clock text-center">
+														<i className="si si-clock mr-5" />{" "}
+														{localStorage.getItem("deliveryOrderPlacedText")}:{" "}
+														<Moment fromNow interval={5000}>
+															{order.updated_at}
+														</Moment>
+													</button>
+													{/* <h1>ORDER STATUS: {order.orderstatus_id}</h1> */}
+													<div className="view-delivery-order" style={{ paddingBottom: "20rem" }}>
+														<RestaurantInfo order={order} />
+														<div className="clearfix" />
+														<hr />
+														<div className="pt-15 px-15">
+															<h3>
+																<span className="delivery-orderItems-basket">
+																	<i className="si si-basket mr-2" />
+																</span>
+																{localStorage.getItem("deliveryOrderItems")}
+															</h3>
+															{order.orderitems.map((item) => (
+																<OrderItems item={item} key={item.id} />
+															))}
+														</div>
+														<hr />
+
+
+														{!this.state.picked_up && (
+															<React.Fragment>
+
+
+
+
+
+																<div className="pt-15 px-15">
+																	<div className="address restaurant-address">
+																		<h4 className="text-muted">
+																			Endereço de coleta
+																		</h4>
+																		<p>Restaurante:</p>
+																		<p className="m-0">{order.restaurant.address}</p>
+																		<p className="m-0">{order.restaurant.pincode}</p>
+																		<div
+																			className="pull-right"
+																			onClick={() =>
+																				this.__getDirectionToRestaurant(
+																					order.restaurant.latitude,
+																					order.restaurant.longitude
+																				)
+																			}
+																		>
+
+
+
+
+
+
+																			<button
+																				style={{ borderRadius: 7, color: "#d8334a", backgroundColor: "#dc3545" }}
 																				className="btn btn-get-direction"
 																				onClick={() =>
 																					this.__getDirectionToUser(order.location)
 																				}
 																			>
-																				Veja no Mapa
+
+																				<p style={{ color: "#ffff", textAlign: "center", alignItems: "center", alignContent: "center" }}>  Veja no mapa </p>
 																			</button>
-																		</div>
-																		<div className="pull-right mr-2">
-																			<a style={{ backgroundColor: 'green', color: '#fff', borderRadius: 7 }}
-																				className="btn btn-get-direction"
-																				href={"https://api.whatsapp.com/send?phone=" + order.user.phone}
-																			>
-																				Chat Empresa
-																	</a>
 																		</div>
 																		<div className="clearfix" />
 																	</div>
 																</div>
-															)}
 
 
 
 
 
-															<div className="pt-15 px-15">
-																<div className="address restaurant-address">
-																	<h4 className="text-muted">
-																		Bairro da entrega
-																	</h4>
 
-																	{order.orderitems.map((item) => (
-																		<OrderItems item={item} key={item.id} />
-																	))}
-																	<div>
 
+
+																{localStorage.getItem("showUserInfoBeforePickup") === "true" && (
+																	<div className="pt-15 px-15">
+																		<div className="customer-address">
+																			<h4 className="text-muted">
+																				Endereço da entrega
+																			</h4>
+																			<p className="font-weight-bold mb-0">
+																				{order.user.name}
+																			</p>
+																			<p className="mb-0">{order.user.phone}</p>
+																			<p className="mb-2">{order.address}</p>
+																			<div className="pull-right mr-2">
+
+																				<a
+																					style={{ backgroundColor: "#28a745", borderRadius: 7 }}
+																					className="btn btn-get-direction"
+																					href={"http://api.whatsapp.com/send?1=pt_BR&phone=55" + order.user.phone}>
+																					<h6 style={{ color: "#ffff" }} >Chat Empresa</h6></a>
+
+																				<a
+																					style={{ backgroundColor: "#e84c3d", borderRadius: 7 }}
+																					className="btn btn-get-direction"
+																					onClick={() =>
+																						this.__getDirectionToUser(order.location)
+																					}><h6 style={{ color: "#ffff" }} >Veja no Mapa</h6></a></div>
+																			<div className="clearfix" />
+
+
+																		</div>
 																	</div>
-																	<div className="clearfix" />
-																</div>
-															</div>
+																)}
 
-														</React.Fragment>
-													)}
 
-													{this.state.picked_up && (
-														<React.Fragment>
-															<div className="pt-15 px-15">
-																<div className="customer-address">
-																	<h4 className="text-muted">
-																		Endereço da Coleta
-																	</h4>
-																	<p className="font-weight-bold mb-0">{order.user.name}</p>
-																	<p className="mb-0">{order.user.phone}</p>
-																	<p className="mb-2">{order.address}</p>
-																	<div className="pull-right">
-																		<button style={{ backgroundColor: 'red', color: '#fff' }}
-																			className="btn btn-get-direction"
-																			onClick={() =>
-																				this.__getDirectionToUser(order.location)
-																			}
-																		>
-																			Veja no Mapa
-																		</button>
-																	</div>
-																	<div className="pull-right mr-2">
-																		<a style={{ backgroundColor: 'green', color: '#fff' }}
-																			className="btn btn-get-direction"
-																			href={"https://api.whatsapp.com/send?phone=" + order.user.phone}
-																		>
-																			Chat Empresa
-																		</a>
-																	</div>
 
-																	<div className="clearfix" />
-																</div>
-															</div>
-															<div className="pt-15 px-15">
 
-															</div>
-															{localStorage.getItem("enableDeliveryPin") === "true" && (
-																<div className="pt-10 px-15 delivery-pin-block">
-																	<div className="form-group">
-																		<div className="row">
-																			<div className="col-12">
-																				<input
-																					type="text"
-																					className="form-control"
-																					placeholder={localStorage.getItem(
-																						"deliveryDeliveryPinPlaceholder"
-																					)}
-																					onChange={this.__handleDeliveryPinInput}
-																				/>
+															</React.Fragment>
+														)}
+
+														{this.state.picked_up && (
+															<React.Fragment>
+
+
+																{localStorage.getItem("enableDeliveryPin") === "true" && (
+																	<div className="pt-10 px-15 delivery-pin-block">
+																		<div className="form-group">
+																			<div className="row">
+																				<div className="col-12">
+																					<input
+																						type="text"
+																						className="form-control"
+																						placeholder={localStorage.getItem(
+																							"deliveryDeliveryPinPlaceholder"
+																						)}
+																						onChange={this.__handleDeliveryPinInput}
+																					/>
+																				</div>
 																			</div>
 																		</div>
 																	</div>
-																</div>
-															)}
-														</React.Fragment>
-													)}
-													<div className="delivery-action">
-														{!this.state.accepted_order &&
-															!this.state.picked_up &&
-															!this.state.delivered && (
-																<button
-																	onClick={this.__acceptToDeliver}
-																	type="button"
-																	className="btn btn-accept"
-																	style={{
-																		backgroundColor: localStorage.getItem("storeColor"),
-																	}}
-																>
-																	<i className="si si-check mr-5" />
-																	{localStorage.getItem("deliveryAcceptOrderButton")}
-																</button>
-															)}
-														{this.state.accepted_order &&
-															!this.state.picked_up &&
-															!this.state.delivered && (
-																<button
-																	onClick={this.__pickedUp}
-																	type="button"
-																	className="btn btn-accept"
-																	style={{
-																		backgroundColor: 'yellow',
-																	}}
-																>
-																	<i className="si si-bag mr-5" />
-																	{localStorage.getItem("deliveryPickedUpButton")}
-																</button>
-															)}
-														{this.state.accepted_order &&
-															this.state.picked_up &&
-															!this.state.delivered && (
-																<button
-																	onClick={this.__delivered}
-																	type="button"
-																	className="btn btn-accept"
-																	style={{
-																		backgroundColor: 'red',
-																	}}
-																>
-																	<i className="si si-check mr-5" />
-																	{localStorage.getItem("deliveryDeliveredButton")}
-																</button>
-															)}
-														{this.state.accepted_order &&
-															this.state.picked_up &&
-															this.state.delivered && (
-																<button
-																	type="button"
-																	className="btn btn-accept"
-																	style={{
-																		backgroundColor: localStorage.getItem("storeColor"),
-																	}}
-																>
-																	<i className="si si-check mr-5" />
-																	{localStorage.getItem("deliveryOrderCompletedButton")}
-																</button>
-															)}
-													</div>
-												</div>
-											</React.Fragment>
-										)}
-								</React.Fragment>
-							)}
-						</React.Fragment>
-					)}
-				<ShareLiveLocation />
-			</React.Fragment>
-		);
+																)}
 
-		{/* fim do golog */ }
-		 
-	 } else {
-
-		return (
-			<React.Fragment>
-				<Meta
-					seotitle="Delivery Orders"
-					seodescription={localStorage.getItem("seoMetaDescription")}
-					ogtype="website"
-					ogtitle={localStorage.getItem("seoOgTitle")}
-					ogdescription={localStorage.getItem("seoOgDescription")}
-					ogurl={window.location.href}
-					twittertitle={localStorage.getItem("seoTwitterTitle")}
-					twitterdescription={localStorage.getItem("seoTwitterDescription")}
-				/>
-				<BackWithSearch
-					boxshadow={true}
-					has_title={true}
-					title={
-						order.unique_order_id && "#" + order.unique_order_id.substr(order.unique_order_id.length - 8)
-					}
-					disable_search={true}
-				/>
-
-				{!order.id ? (
-					<div className="pt-50">
-						<ContentLoader
-							height={150}
-							width={400}
-							speed={1.2}
-							primaryColor="#f3f3f3"
-							secondaryColor="#ecebeb"
-						>
-							<rect x="20" y="70" rx="4" ry="4" width="80" height="78" />
-							<rect x="144" y="85" rx="0" ry="0" width="115" height="18" />
-							<rect x="144" y="115" rx="0" ry="0" width="165" height="16" />
-						</ContentLoader>
-					</div>
-				) : (
-					<React.Fragment>
-						{this.state.loading && (
-							<div className="height-100 overlay-loading ongoing-payment-spin">
-								<div className="spin-load" />
-							</div>
-						)}
-						{!this.state.delivered && (
-							<React.Fragment>
-								{this.state.max_order && (
-									<div className="auth-error">
-										<div className="error-shake">
-											{localStorage.getItem("deliveryMaxOrderReachedMsg")}
-										</div>
-									</div>
-								)}
-								{this.state.already_accepted ? (
-									<div className="auth-error">
-										<div className="error-shake">
-											{localStorage.getItem("deliveryAlreadyAccepted")}
-										</div>
-									</div>
-								) : (
-									<React.Fragment>
-										{this.state.delivery_pin_error && (
-											<div className="auth-error" style={{ zIndex: "9", marginBottom: "4rem" }}>
-												<div className="error-shake">
-													{localStorage.getItem("deliveryInvalidDeliveryPin")}
-												</div>
-											</div>
-										)}
-
-										<button className="btn btn-clock text-center">
-											<i className="si si-clock mr-5" />{" "}
-											{localStorage.getItem("deliveryOrderPlacedText")}:{" "}
-											<Moment fromNow interval={5000}>
-												{order.updated_at}
-											</Moment>
-										</button>
-										{/* <h1>ORDER STATUS: {order.orderstatus_id}</h1> */}
-										<div className="view-delivery-order" style={{ paddingBottom: "20rem" }}>
-											<RestaurantInfo order={order} />
-											<div className="clearfix" />
-											<hr />
-											<div className="pt-15 px-15">
-												<h3>
-													<span className="delivery-orderItems-basket">
-														<i className="si si-basket mr-2" />
-													</span>
-													{localStorage.getItem("deliveryOrderItems")}
-												</h3>
-												{order.orderitems.map((item) => (
-													<OrderItems item={item} key={item.id} />
-												))}
-												{localStorage.getItem("showPriceAndOrderCommentsDelivery") ===
-													"true" && (
-													<React.Fragment>
-														<p>{order.order_comment}</p>
-														<p className="pull-right">
-															<strong>
-																Total:{" "}
-																{localStorage.getItem("currencySymbolAlign") ===
-																	"left" &&
-																	localStorage.getItem("currencyFormat")}{" "}
-																{order.total}
-																{localStorage.getItem("currencySymbolAlign") ===
-																	"right" && localStorage.getItem("currencyFormat")}
-															</strong>
-														</p>
-													</React.Fragment>
-												)}
-											</div>
-											<hr />
-											{!this.state.picked_up && (
-												<React.Fragment>
-													<div className="pt-15 px-15">
-														<div className="address restaurant-address">
-															<h4 className="text-muted">
-																{localStorage.getItem("deliveryRestaurantAddress")}
-															</h4>
-															<p className="m-0">{order.restaurant.address}</p>
-															<p className="m-0">{order.restaurant.pincode}</p>
-															<div
-																className="pull-right"
-																onClick={() =>
-																	this.__getDirectionToRestaurant(
-																		order.restaurant.latitude,
-																		order.restaurant.longitude
-																	)
-																}
-															>
-																<button className="btn btn-get-direction">
-																	<i className="si si-action-redo mr-5" />
-																	{localStorage.getItem("deliveryGetDirectionButton")}
-																</button>
-															</div>
-															<div className="clearfix" />
-														</div>
-													</div>
-													{localStorage.getItem("showUserInfoBeforePickup") === "true" && (
-														<div className="pt-15 px-15">
-															<div className="customer-address">
-																<h4 className="text-muted">
-																	{localStorage.getItem("deliveryDeliveryAddress")}
-																</h4>
-																<p className="font-weight-bold mb-0">
-																	{order.user.name}
-																</p>
-																<p className="mb-0">{order.user.phone}</p>
-																<p className="mb-2">{order.address}</p>
-																<div className="pull-right">
-																	<button
-																		className="btn btn-get-direction"
-																		onClick={() =>
-																			this.__getDirectionToUser(order.location)
-																		}
-																	>
-																		<i className="si si-action-redo mr-5" />
-																		{localStorage.getItem(
-																			"deliveryGetDirectionButton"
-																		)}
-																	</button>
-																</div>
-																<div className="pull-right mr-2">
-																	<a
-																		className="btn btn-get-direction"
-																		href={"tel:" + order.user.phone}
-																	>
-																		<i className="si si-call-out mr-5" />
-																		{localStorage.getItem("callNowButton")}{" "}
-																	</a>
-																</div>
-																<div className="clearfix" />
-															</div>
-														</div>
-													)}
-												</React.Fragment>
-											)}
-
-											{this.state.picked_up && (
-												<React.Fragment>
-													<div className="pt-15 px-15">
-														<div className="customer-address">
-															<h4 className="text-muted">
-																{localStorage.getItem("deliveryDeliveryAddress")}
-															</h4>
-															<p className="font-weight-bold mb-0">{order.user.name}</p>
-															<p className="mb-0">{order.user.phone}</p>
-															<p className="mb-2">{order.address}</p>
-															<div className="pull-right">
-																<button
-																	className="btn btn-get-direction"
-																	onClick={() =>
-																		this.__getDirectionToUser(order.location)
-																	}
-																>
-																	<i className="si si-action-redo mr-5" />
-																	{localStorage.getItem("deliveryGetDirectionButton")}
-																</button>
-															</div>
-															<div className="pull-right mr-2">
-																<a
-																	className="btn btn-get-direction"
-																	href={"tel:" + order.user.phone}
-																>
-																	<i className="si si-call-out mr-5" />
-																	{localStorage.getItem("callNowButton")}{" "}
-																</a>
-															</div>
-
-															<div className="clearfix" />
-														</div>
-													</div>
-													<div className="pt-15 px-15">
-														{order.payment_mode === "COD" ? (
-															<button className="btn btn-cod">
-																{localStorage.getItem("deliveryCashOnDelivery")}:{" "}
-																{localStorage.getItem("currencySymbolAlign") ===
-																	"left" && localStorage.getItem("currencyFormat")}
-																{order.payable}
-																{localStorage.getItem("currencySymbolAlign") ===
-																	"right" && localStorage.getItem("currencyFormat")}
-															</button>
-														) : (
-															<button className="btn btn-payed-online">
-																<i className="si si-check mr-5" />{" "}
-																{localStorage.getItem("deliveryOnlinePayment")}
-															</button>
+															</React.Fragment>
 														)}
-													</div>
-													{localStorage.getItem("enableDeliveryPin") === "true" && (
-														<div className="pt-10 px-15 delivery-pin-block">
-															<div className="form-group">
-																<div className="row">
-																	<div className="col-12">
-																		<input
-																			type="text"
-																			className="form-control"
-																			placeholder={localStorage.getItem(
-																				"deliveryDeliveryPinPlaceholder"
-																			)}
-																			onChange={this.__handleDeliveryPinInput}
-																		/>
-																	</div>
-																</div>
-															</div>
+														<div className="delivery-action">
+															{!this.state.accepted_order &&
+																!this.state.picked_up &&
+																!this.state.delivered && (
+																	<button
+																		onClick={this.__acceptToDeliver}
+																		type="button"
+																		className="btn btn-accept"
+																		style={{
+																			backgroundColor: localStorage.getItem("storeColor"),
+																		}}
+																	>
+																		<i className="si si-check mr-5" />
+																		{localStorage.getItem("deliveryAcceptOrderButton")}
+																	</button>
+																)}
+															{this.state.accepted_order &&
+																!this.state.picked_up &&
+																!this.state.delivered && (
+																	<button
+																		onClick={this.__pickedUp}
+																		type="button"
+																		className="btn btn-accept"
+																		style={{
+																			backgroundColor: "#ffc107",
+																		}}
+																	>
+																		<i className="si si-bag mr-5" />
+																		{localStorage.getItem("deliveryPickedUpButton")}
+																	</button>
+																)}
+															{this.state.accepted_order &&
+																this.state.picked_up &&
+																!this.state.delivered && (
+																	<button
+																		onClick={this.__delivered}
+																		type="button"
+																		className="btn btn-accept"
+																		style={{
+																			backgroundColor: "red",
+																		}}
+																	>
+																		<i className="si si-check mr-5" />
+																		{localStorage.getItem("deliveryDeliveredButton")}
+																	</button>
+																)}
+															{this.state.accepted_order &&
+																this.state.picked_up &&
+																this.state.delivered && (
+																	<button
+																		type="button"
+																		className="btn btn-accept"
+																		style={{
+																			backgroundColor: localStorage.getItem("storeColor"),
+																		}}
+																	>
+																		<i className="si si-check mr-5" />
+																		{localStorage.getItem("deliveryOrderCompletedButton")}
+																	</button>
+																)}
 														</div>
-													)}
+													</div>
 												</React.Fragment>
 											)}
-											<div className="delivery-action">
-												{!this.state.accepted_order &&
-													!this.state.picked_up &&
-													!this.state.delivered && (
-														<button
-															onClick={this.__acceptToDeliver}
-															type="button"
-															className="btn btn-accept"
-															style={{
-																backgroundColor: localStorage.getItem("storeColor"),
-															}}
-														>
-															<i className="si si-check mr-5" />
-															{localStorage.getItem("deliveryAcceptOrderButton")}
-														</button>
-													)}
-												{this.state.accepted_order &&
-													!this.state.picked_up &&
-													!this.state.delivered && (
-														<button
-															onClick={this.__pickedUp}
-															type="button"
-															className="btn btn-accept"
-															style={{
-																backgroundColor: localStorage.getItem("storeColor"),
-															}}
-														>
-															<i className="si si-bag mr-5" />
-															{localStorage.getItem("deliveryPickedUpButton")}
-														</button>
-													)}
-												{this.state.accepted_order &&
-													this.state.picked_up &&
-													!this.state.delivered && (
-														<button
-															onClick={this.__delivered}
-															type="button"
-															className="btn btn-accept"
-															style={{
-																backgroundColor: localStorage.getItem("storeColor"),
-															}}
-														>
-															<i className="si si-check mr-5" />
-															{localStorage.getItem("deliveryDeliveredButton")}
-														</button>
-													)}
-												{this.state.accepted_order &&
-													this.state.picked_up &&
-													this.state.delivered && (
-														<button
-															type="button"
-															className="btn btn-accept"
-															style={{
-																backgroundColor: localStorage.getItem("storeColor"),
-															}}
-														>
-															<i className="si si-check mr-5" />
-															{localStorage.getItem("deliveryOrderCompletedButton")}
-														</button>
-													)}
-											</div>
-										</div>
 									</React.Fragment>
 								)}
 							</React.Fragment>
 						)}
-					</React.Fragment>
-				)}
-				<ShareLiveLocation />
-			</React.Fragment>
-		);
-		 
-	 }
-		
-			
-		 
+					<ShareLiveLocation />
+				</React.Fragment>
+			);
 
-	
 
+			return (
+				<React.Fragment>
+					<Meta
+						seotitle="Delivery Orders"
+						seodescription={localStorage.getItem("seoMetaDescription")}
+						ogtype="website"
+						ogtitle={localStorage.getItem("seoOgTitle")}
+						ogdescription={localStorage.getItem("seoOgDescription")}
+						ogurl={window.location.href}
+						twittertitle={localStorage.getItem("seoTwitterTitle")}
+						twitterdescription={localStorage.getItem("seoTwitterDescription")}
+					/>
+					<BackWithSearch
+						boxshadow={true}
+						has_title={true}
+						title={
+							order.unique_order_id && "#" + order.unique_order_id.substr(order.unique_order_id.length - 8)
+						}
+						disable_search={true}
+					/>
+
+					{!order.id ? (
+						<div className="pt-50">
+							<ContentLoader
+								height={150}
+								width={400}
+								speed={1.2}
+								primaryColor="#f3f3f3"
+								secondaryColor="#ecebeb"
+							>
+								<rect x="20" y="70" rx="4" ry="4" width="80" height="78" />
+								<rect x="144" y="85" rx="0" ry="0" width="115" height="18" />
+								<rect x="144" y="115" rx="0" ry="0" width="165" height="16" />
+							</ContentLoader>
+						</div>
+					) : (
+							<React.Fragment>
+								{this.state.loading && (
+									<div className="height-100 overlay-loading ongoing-payment-spin">
+										<div className="spin-load" />
+									</div>
+								)}
+								{!this.state.delivered && (
+									<React.Fragment>
+										{this.state.max_order && (
+											<div className="auth-error">
+												<div className="error-shake">
+													{localStorage.getItem("deliveryMaxOrderReachedMsg")}
+												</div>
+											</div>
+										)}
+										{this.state.already_accepted ? (
+											<div className="auth-error">
+												<div className="error-shake">
+													{localStorage.getItem("deliveryAlreadyAccepted")}
+												</div>
+											</div>
+										) : (
+												<React.Fragment>
+													{this.state.delivery_pin_error && (
+														<div className="auth-error" style={{ zIndex: "9", marginBottom: "4rem" }}>
+															<div className="error-shake">
+																{localStorage.getItem("deliveryInvalidDeliveryPin")}
+															</div>
+														</div>
+													)}
+
+													<button className="btn btn-clock text-center">
+														<i className="si si-clock mr-5" />{" "}
+														{localStorage.getItem("deliveryOrderPlacedText")}:{" "}
+														<Moment fromNow interval={5000}>
+															{order.updated_at}
+														</Moment>
+													</button>
+													{/* <h1>ORDER STATUS: {order.orderstatus_id}</h1> */}
+													<div className="view-delivery-order" style={{ paddingBottom: "20rem" }}>
+														<RestaurantInfo order={order} />
+														<div className="clearfix" />
+														<hr />
+														<div className="pt-15 px-15">
+															<h3>
+																<span className="delivery-orderItems-basket">
+																	<i className="si si-basket mr-2" />
+																</span>
+																{localStorage.getItem("deliveryOrderItems")}
+															</h3>
+															{order.orderitems.map((item) => (
+																<OrderItems item={item} key={item.id} />
+															))}
+														</div>
+														<hr />
+
+
+														{!this.state.picked_up && (
+															<React.Fragment>
+
+
+
+																{localStorage.getItem("showUserInfoBeforePickup") === "true" && (
+																	<div className="pt-15 px-15">
+																		<div className="customer-address">
+																			<h4 className="text-muted">
+																				{localStorage.getItem("deliveryDeliveryAddress")}
+																			</h4>
+																			<p className="font-weight-bold mb-0">
+																				{order.user.name}
+																			</p>
+																			<p className="mb-0">{order.user.phone}</p>
+																			<p className="mb-2">{order.address}</p>
+																			<div className="pull-right">
+																				<button
+																					className="btn btn-get-direction"
+																					onClick={() =>
+																						this.__getDirectionToUser(order.location)
+																					}
+																				>
+																					<i className="si si-action-redo mr-5" />
+																					{localStorage.getItem(
+																						"deliveryGetDirectionButton"
+																					)}
+																				</button>
+																			</div>
+																			<div className="pull-right mr-2">
+																				<a
+																					className="btn btn-get-direction"
+																					href={"tel:" + order.user.phone}
+																				>
+																					<i className="si si-call-out mr-5" />
+																					{localStorage.getItem("callNowButton")}{" "}
+																				</a>
+																			</div>
+																			<div className="clearfix" />
+																		</div>
+																	</div>
+																)}
+
+
+
+																<div className="pt-15 px-15">
+																	<div className="address restaurant-address">
+																		<h4 className="text-muted">
+																			{localStorage.getItem("deliveryRestaurantAddress")}
+																		</h4>
+																		<p className="m-0">{order.restaurant.address}</p>
+																		<p className="m-0">{order.restaurant.pincode}</p>
+																		<div
+																			className="pull-right"
+																			onClick={() =>
+																				this.__getDirectionToRestaurant(
+																					order.restaurant.latitude,
+																					order.restaurant.longitude
+																				)
+																			}
+																		>
+																			<button className="btn btn-get-direction">
+																				<i className="si si-action-redo mr-5" />
+																				{localStorage.getItem("deliveryGetDirectionButton")}
+																			</button>
+																		</div>
+																		<div className="clearfix" />
+																	</div>
+																</div>
+
+															</React.Fragment>
+														)}
+
+														{this.state.picked_up && (
+															<React.Fragment>
+																<div className="pt-15 px-15">
+																	<div className="customer-address">
+																		<h4 className="text-muted">
+																			{localStorage.getItem("deliveryDeliveryAddress")}
+																		</h4>
+																		<p className="font-weight-bold mb-0">{order.user.name}</p>
+																		<p className="mb-0">{order.user.phone}</p>
+																		<p className="mb-2">{order.address}</p>
+																		<div className="pull-right">
+																			<button
+																				className="btn btn-get-direction"
+																				onClick={() =>
+																					this.__getDirectionToUser(order.location)
+																				}
+																			>
+																				<i className="si si-action-redo mr-5" />
+																				{localStorage.getItem("deliveryGetDirectionButton")}
+																			</button>
+																		</div>
+																		<div className="pull-right mr-2">
+																			<a
+																				className="btn btn-get-direction"
+																				href={"tel:" + order.user.phone}
+																			>
+																				<i className="si si-call-out mr-5" />
+																				{localStorage.getItem("callNowButton")}{" "}
+																			</a>
+																		</div>
+
+																		<div className="clearfix" />
+																	</div>
+																</div>
+																<div className="pt-15 px-15">
+																	{order.payment_mode === "COD" ? (
+																		<button className="btn btn-cod">
+																			{localStorage.getItem("deliveryCashOnDelivery")}:{" "}
+																			{localStorage.getItem("currencySymbolAlign") ===
+																				"left" && localStorage.getItem("currencyFormat")}
+																			{order.payable}
+																			{localStorage.getItem("currencySymbolAlign") ===
+																				"right" && localStorage.getItem("currencyFormat")}
+																		</button>
+																	) : (
+																			<button className="btn btn-payed-online">
+																				<i className="si si-check mr-5" />{" "}
+																				{localStorage.getItem("deliveryOnlinePayment")}
+																			</button>
+																		)}
+																</div>
+																{localStorage.getItem("enableDeliveryPin") === "true" && (
+																	<div className="pt-10 px-15 delivery-pin-block">
+																		<div className="form-group">
+																			<div className="row">
+																				<div className="col-12">
+																					<input
+																						type="text"
+																						className="form-control"
+																						placeholder={localStorage.getItem(
+																							"deliveryDeliveryPinPlaceholder"
+																						)}
+																						onChange={this.__handleDeliveryPinInput}
+																					/>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																)}
+															</React.Fragment>
+														)}
+														<div className="delivery-action">
+															{!this.state.accepted_order &&
+																!this.state.picked_up &&
+																!this.state.delivered && (
+																	<button
+																		onClick={this.__acceptToDeliver}
+																		type="button"
+																		className="btn btn-accept"
+																		style={{
+																			backgroundColor: localStorage.getItem("storeColor"),
+																		}}
+																	>
+																		<i className="si si-check mr-5" />
+																		{localStorage.getItem("deliveryAcceptOrderButton")}
+																	</button>
+																)}
+															{this.state.accepted_order &&
+																!this.state.picked_up &&
+																!this.state.delivered && (
+																	<button
+																		onClick={this.__pickedUp}
+																		type="button"
+																		className="btn btn-accept"
+																		style={{
+																			backgroundColor: localStorage.getItem("storeColor"),
+																		}}
+																	>
+																		<i className="si si-bag mr-5" />
+																		{localStorage.getItem("deliveryPickedUpButton")}
+																	</button>
+																)}
+															{this.state.accepted_order &&
+																this.state.picked_up &&
+																!this.state.delivered && (
+																	<button
+																		onClick={this.__delivered}
+																		type="button"
+																		className="btn btn-accept"
+																		style={{
+																			backgroundColor: localStorage.getItem("storeColor"),
+																		}}
+																	>
+																		<i className="si si-check mr-5" />
+																		{localStorage.getItem("deliveryDeliveredButton")}
+																	</button>
+																)}
+															{this.state.accepted_order &&
+																this.state.picked_up &&
+																this.state.delivered && (
+																	<button
+																		type="button"
+																		className="btn btn-accept"
+																		style={{
+																			backgroundColor: localStorage.getItem("storeColor"),
+																		}}
+																	>
+																		<i className="si si-check mr-5" />
+																		{localStorage.getItem("deliveryOrderCompletedButton")}
+																	</button>
+																)}
+														</div>
+													</div>
+												</React.Fragment>
+											)}
+									</React.Fragment>
+								)}
+							</React.Fragment>
+						)}
+					<ShareLiveLocation />
+				</React.Fragment>
+			);
+
+		}
 	}
 }
 

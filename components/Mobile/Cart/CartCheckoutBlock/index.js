@@ -130,7 +130,7 @@ class CartCheckoutBlock extends Component {
 												<Ink duration={400} />
 											</Link>
 											<h2 className="deliver-to-text m-0 pl-0 pb-5">
-												Local da Coleta
+												{localStorage.getItem("cartDeliverTo")}
 											</h2>
 											<div className="user-address truncate-text m-0 pt-10">
 												{user.data.default_address.address}

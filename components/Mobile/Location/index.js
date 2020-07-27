@@ -14,16 +14,15 @@ import Axios from "axios";
 
 import { getAddresses, setDefaultAddress } from "../../../services/addresses/actions";
 import AddressList from "../Account/Addresses/AddressList";
-import Ink from "react-ink";
 
 class Location extends Component {
 	state = {
 		google_script_loaded: false,
 		loading_popular_location: true,
-		gps_loading: false,
+		gps_loading: false
 	};
 	static contextTypes = {
-		router: () => null,
+		router: () => null
 	};
 
 	componentDidMount() {
@@ -60,9 +59,9 @@ class Location extends Component {
 		}
 	}
 
-	handleGeoLocationClick = (results) => {
+	handleGeoLocationClick = results => {
 		// console.log(results);
-		const saveGeoLocation = new Promise((resolve) => {
+		const saveGeoLocation = new Promise(resolve => {
 			localStorage.setItem("geoLocation", JSON.stringify(results[0]));
 			resolve("GeoLocation Saved");
 		});
@@ -78,10 +77,10 @@ class Location extends Component {
 		this.setState({ gps_loading: true });
 		if (location) {
 			location.getCurrentPosition(
-				(position) => {
+				position => {
 					this.reverseLookup(position.coords.latitude, position.coords.longitude);
 				},
-				(error) => {
+				error => {
 					this.setState({ gps_loading: false });
 					console.log(error);
 					alert(localStorage.getItem("gpsAccessNotGrantedMsg"));
@@ -93,9 +92,9 @@ class Location extends Component {
 	reverseLookup = (lat, lng) => {
 		Axios.post(GET_ADDRESS_FROM_COORDINATES, {
 			lat: lat,
-			lng: lng,
+			lng: lng
 		})
-			.then((response) => {
+			.then(response => {
 				console.log(response);
 				const myLocation = [
 					{
@@ -103,10 +102,10 @@ class Location extends Component {
 						geometry: {
 							location: {
 								lat: lat,
-								lng: lng,
-							},
-						},
-					},
+								lng: lng
+							}
+						}
+					}
 				];
 				this.handleGeoLocationClick(myLocation);
 			})
@@ -126,13 +125,13 @@ class Location extends Component {
 		const { user } = this.props;
 		if (user.success) {
 			this.props.setDefaultAddress(user.data.id, address_id, user.data.auth_token).then(() => {
-				const saveUserSetAddress = new Promise((resolve) => {
+				const saveUserSetAddress = new Promise(resolve => {
 					const userSetAddress = {
 						lat: address.latitude,
 						lng: address.longitude,
 						address: address.address,
 						house: address.house,
-						tag: address.tag,
+						tag: address.tag
 					};
 					localStorage.setItem("userSetAddress", JSON.stringify(userSetAddress));
 					resolve("Address Saved");
@@ -167,7 +166,7 @@ class Location extends Component {
 				/>
 				{this.state.gps_loading && (
 					<div className="height-100 overlay-loading ongoing-payment-spin">
-						<div className="spin-load" />
+						<div className="spin-load"></div>
 					</div>
 				)}
 				<div className="col-12 p-0 pt-0">
@@ -182,28 +181,17 @@ class Location extends Component {
 									alt="loading"
 								/>
 							}
-							renderInput={(props) => (
+							renderInput={props => (
 								<div className="input-location-icon-field">
-									<i className="si si-magnifier" />
-									<div className="input-group-prepend">
-										<button
-											type="button"
-											className="btn search-navs-btns location-back-button"
-											style={{ position: "relative" }}
-											onClick={() => this.context.router.history.goBack()}
-										>
-											<i className="si si-arrow-left" />
-											<Ink duration="500" />
-										</button>
-										<input
-											{...props}
-											className="form-control search-input"
-											placeholder={localStorage.getItem("searchAreaPlaceholder")}
-											ref={(input) => {
-												this.searchInput = input;
-											}}
-										/>
-									</div>
+									<i className="si si-magnifier"></i>
+									<input
+										{...props}
+										className="form-control search-input search-box"
+										placeholder={localStorage.getItem("searchAreaPlaceholder")}
+										ref={input => {
+											this.searchInput = input;
+										}}
+									/>
 								</div>
 							)}
 							renderSuggestions={(active, suggestions, onSelectSuggestion) => (
@@ -212,11 +200,11 @@ class Location extends Component {
 										<Flip top delay={index * 50} key={suggestion.id}>
 											<div
 												className="location-suggestion"
-												onClick={(event) => {
+												onClick={event => {
 													onSelectSuggestion(suggestion, event);
 													geocodeByPlaceId(suggestion.place_id)
-														.then((results) => this.handleGeoLocationClick(results))
-														.catch((error) => console.error(error));
+														.then(results => this.handleGeoLocationClick(results))
+														.catch(error => console.error(error));
 												}}
 											>
 												<span className="location-main-name">
@@ -244,7 +232,7 @@ class Location extends Component {
 						style={{ color: localStorage.getItem("storeColor") }}
 						onClick={this.getMyLocation}
 					>
-						<i className="si si-pointer" /> {localStorage.getItem("useCurrentLocationText")}
+						<i className="si si-pointer"></i> {localStorage.getItem("useCurrentLocationText")}
 					</button>
 				</div>
 				<PopularPlaces
@@ -256,7 +244,7 @@ class Location extends Component {
 					<React.Fragment>
 						<div className="p-15 mt-10 location-saved-address">
 							<h1 className="text-muted h4">{localStorage.getItem("locationSavedAddresses")}</h1>
-							{addresses.map((address) => (
+							{addresses.map(address => (
 								<AddressList
 									handleDeleteAddress={this.handleDeleteAddress}
 									deleteButton={false}
@@ -275,13 +263,10 @@ class Location extends Component {
 	}
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
 	user: state.user.user,
 	popular_locations: state.popular_locations.popular_locations,
-	addresses: state.addresses.addresses,
+	addresses: state.addresses.addresses
 });
 
-export default connect(
-	mapStateToProps,
-	{ getPopularLocations, getAddresses, setDefaultAddress }
-)(Location);
+export default connect(mapStateToProps, { getPopularLocations, getAddresses, setDefaultAddress })(Location);

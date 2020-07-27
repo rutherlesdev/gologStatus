@@ -41,7 +41,7 @@ export default initialState => {
 			user: state.user,
 			addresses: state.addresses,
 			delivery_user: state.delivery_user,
-			languages: state.languages.languages,
+			languages: state.languages.languages
 		};
 		localStorage.setItem("state", JSON.stringify(persist));
 
